@@ -1,13 +1,13 @@
 import React from "react";
-import Header from "./Header";
-import Footer from "./Footer";
+import ModernHeader from "./ModernHeader";
+import ModernFooter from "./ModernFooter";
 import { Helmet } from "react-helmet";
 import { Toaster } from "react-hot-toast";
 import "react-toastify/dist/ReactToastify.css";
 
 function Layout({ children, title, description, keyword, author }) {
   return (
-    <div>
+    <div className="flex flex-col min-h-screen bg-gray-50">
       <Helmet>
         <meta charSet="utf-8" />
         <title>{title}</title>
@@ -16,12 +16,12 @@ function Layout({ children, title, description, keyword, author }) {
         <meta name="keywords" content={keyword} />
         <meta name="author" content={author} />
       </Helmet>
-      <Header />
-      <main style={{ minHeight: "70vh" }}>
+      <ModernHeader />
+      <main className="flex-1">
         {children}
-        <Toaster />
+        <Toaster position="top-right" />
       </main>
-      <Footer />
+      <ModernFooter />
     </div>
   );
 }
