@@ -56,9 +56,30 @@ const ProductDetails = () => {
   };
 
   const handleAddToCart = () => {
-    setCart([...cart, product]);
-    localStorage.setItem("cart", JSON.stringify([...cart, product]));
-    toast.success("Item Added to cart", {
+    // Check if product has stock
+    if (product.quantity === 0) {
+      toast.error("Product is out of stock", {
+        duration: 2000,
+      });
+      return;
+    }
+
+    // Check if requested quantity exceeds available stock
+    if (quantity > product.quantity) {
+      toast.error(`Only ${product.quantity} items available in stock`, {
+        duration: 2000,
+      });
+      return;
+    }
+
+    // Add product with selected quantity to cart
+    const productWithQuantity = { ...product, orderQuantity: quantity };
+    setCart([...cart, productWithQuantity]);
+    localStorage.setItem(
+      "cart",
+      JSON.stringify([...cart, productWithQuantity])
+    );
+    toast.success(`${quantity} item(s) added to cart`, {
       duration: 2000,
       style: {
         background: "#0EA5A4",
@@ -174,7 +195,8 @@ const ProductDetails = () => {
                   <div className="flex items-center gap-4">
                     <button
                       onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                      className="w-10 h-10 rounded-lg border-2 border-gray-300 flex items-center justify-center text-gray-700 hover:border-primary-500 hover:text-primary-500 transition-colors"
+                      disabled={quantity <= 1}
+                      className="w-10 h-10 rounded-lg border-2 border-gray-300 flex items-center justify-center text-gray-700 hover:border-primary-500 hover:text-primary-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       -
                     </button>
@@ -182,12 +204,29 @@ const ProductDetails = () => {
                       {quantity}
                     </span>
                     <button
-                      onClick={() => setQuantity(quantity + 1)}
-                      className="w-10 h-10 rounded-lg border-2 border-gray-300 flex items-center justify-center text-gray-700 hover:border-primary-500 hover:text-primary-500 transition-colors"
+                      onClick={() => {
+                        if (quantity >= product.quantity) {
+                          toast.error(
+                            `Only ${product.quantity} items available`,
+                            {
+                              duration: 2000,
+                            }
+                          );
+                        } else {
+                          setQuantity(quantity + 1);
+                        }
+                      }}
+                      disabled={quantity >= product.quantity}
+                      className="w-10 h-10 rounded-lg border-2 border-gray-300 flex items-center justify-center text-gray-700 hover:border-primary-500 hover:text-primary-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                     >
                       +
                     </button>
                   </div>
+                  {product.quantity > 0 && (
+                    <p className="text-xs text-gray-500">
+                      {product.quantity} items available
+                    </p>
+                  )}
                 </div>
 
                 {/* Action Buttons */}

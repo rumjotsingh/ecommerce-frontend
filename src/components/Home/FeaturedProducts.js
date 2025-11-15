@@ -69,7 +69,7 @@ const FeaturedProducts = () => {
         {/* Mobile View All Button */}
         <div className="md:hidden text-center mt-8">
           <button
-            onClick={() => navigate("/")}
+            onClick={() => navigate("/products")}
             className="inline-flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-primary-500 to-secondary-500 text-white font-medium rounded-xl hover:shadow-lg transition-all"
           >
             View All Products
