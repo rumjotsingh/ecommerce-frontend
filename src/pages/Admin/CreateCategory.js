@@ -12,7 +12,6 @@ import {
   AiOutlineAppstore,
   AiOutlineEdit,
   AiOutlineDelete,
-  AiOutlinePlus,
 } from "react-icons/ai";
 
 const CreateCategory = () => {

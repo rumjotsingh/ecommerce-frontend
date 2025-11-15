@@ -18,6 +18,8 @@ const Button = ({
       "bg-primary-500 hover:bg-primary-600 text-white shadow-lg hover:shadow-xl",
     secondary:
       "bg-secondary-500 hover:bg-secondary-600 text-white shadow-lg hover:shadow-xl",
+    success:
+      "bg-green-500 hover:bg-green-600 text-white shadow-lg hover:shadow-xl",
     outline: "border-2 border-primary-500 text-primary-500 hover:bg-primary-50",
     ghost: "text-primary-500 hover:bg-primary-50",
     danger: "bg-red-500 hover:bg-red-600 text-white shadow-lg hover:shadow-xl",

@@ -5,7 +5,6 @@ import { useAuth } from "../../context/auth";
 import toast from "react-hot-toast";
 import SearchInput from "../Form/SearchInput";
 import useCategory from "../../hooks/useCategory";
-import { useCart } from "../../context/cart";
 import { fetchWishlistCount } from "../../redux/slices/wishlistSlice";
 import {
   AiOutlineMenu,
@@ -20,7 +19,7 @@ import { BiCategory } from "react-icons/bi";
 
 const Header = () => {
   const [auth, setAuth] = useAuth();
-  const [cart] = useCart();
+  const { items: cart } = useSelector((state) => state.cart);
   const dispatch = useDispatch();
   const { count: wishlistCount } = useSelector((state) => state.wishlist);
   const categories = useCategory();

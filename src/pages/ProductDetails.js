@@ -3,7 +3,6 @@ import Layout from "./../components/layout/layout";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import { useCart } from "../context/cart";
 import { useAuth } from "../context/auth";
 import { API_ENDPOINTS } from "../config/api";
 import toast from "react-hot-toast";
@@ -24,20 +23,24 @@ import ProductCard from "../components/Product/ProductCard";
 import {
   addToWishlist,
   removeFromWishlist,
-  fetchWishlist,
 } from "../redux/slices/wishlistSlice";
 import {
   addReview,
   fetchProductReviews,
   deleteReview,
 } from "../redux/slices/reviewSlice";
+import {
+  addToCart,
+  increaseQuantity,
+  decreaseQuantity,
+} from "../redux/slices/cartSlice";
 
 const ProductDetails = () => {
   const params = useParams();
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [auth] = useAuth();
-  const [cart, setCart] = useCart();
+  const { items: cartItems } = useSelector((state) => state.cart);
   const { items: wishlistItems } = useSelector((state) => state.wishlist);
   const { reviews, loading: reviewsLoading } = useSelector(
     (state) => state.review
@@ -47,29 +50,13 @@ const ProductDetails = () => {
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
   const [isInWishlist, setIsInWishlist] = useState(false);
+  const [cartItem, setCartItem] = useState(null);
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [reviewRating, setReviewRating] = useState(5);
   const [reviewComment, setReviewComment] = useState("");
   const [submittingReview, setSubmittingReview] = useState(false);
 
   //initial details
-  useEffect(() => {
-    if (params?.slug) getProduct();
-  }, [params?.slug]);
-
-  useEffect(() => {
-    // Check if product is in wishlist
-    const inWishlist = wishlistItems?.some((item) => item._id === product._id);
-    setIsInWishlist(inWishlist);
-  }, [wishlistItems, product._id]);
-
-  useEffect(() => {
-    // Fetch reviews when product changes
-    if (product._id) {
-      dispatch(fetchProductReviews(product._id));
-    }
-  }, [product._id, dispatch]);
-
   //getProduct
   const getProduct = async () => {
     try {
@@ -82,6 +69,28 @@ const ProductDetails = () => {
       console.log(error);
     }
   };
+  useEffect(() => {
+    if (params?.slug) getProduct();
+  }, [params?.slug, getProduct]);
+
+  useEffect(() => {
+    // Check if product is in wishlist
+    const inWishlist = wishlistItems?.some((item) => item._id === product._id);
+    setIsInWishlist(inWishlist);
+  }, [wishlistItems, product._id]);
+
+  useEffect(() => {
+    // Check if product is in cart
+    const itemInCart = cartItems?.find((item) => item._id === product._id);
+    setCartItem(itemInCart || null);
+  }, [cartItems, product._id]);
+
+  useEffect(() => {
+    // Fetch reviews when product changes
+    if (product._id) {
+      dispatch(fetchProductReviews(product._id));
+    }
+  }, [product._id, dispatch]);
 
   //get similar product
   const getSimilarProduct = async (pid, cid) => {
@@ -110,20 +119,38 @@ const ProductDetails = () => {
       return;
     }
 
-    // Add product with selected quantity to cart
-    const productWithQuantity = { ...product, orderQuantity: quantity };
-    setCart([...cart, productWithQuantity]);
-    localStorage.setItem(
-      "cart",
-      JSON.stringify([...cart, productWithQuantity])
-    );
-    toast.success(`${quantity} item(s) added to cart`, {
-      duration: 2000,
-      style: {
-        background: "#0EA5A4",
-        color: "#fff",
-      },
-    });
+    // Check if product already exists in cart
+    const existingItem = cartItems.find((item) => item._id === product._id);
+    const currentQuantity = existingItem?.orderQuantity || 0;
+    const newTotalQuantity = currentQuantity + quantity;
+
+    // Check if new total quantity exceeds stock
+    if (newTotalQuantity > product.quantity) {
+      toast.error(
+        `Cannot add more. Only ${product.quantity} items available in stock`,
+        {
+          duration: 2000,
+        }
+      );
+      return;
+    }
+
+    // Add product with selected quantity to cart via Redux
+    dispatch(addToCart({ product, quantity }));
+
+    if (existingItem) {
+      toast.success(`Quantity updated! ${newTotalQuantity} item(s) in cart`, {
+        duration: 2000,
+      });
+    } else {
+      toast.success(`${quantity} item(s) added to cart`, {
+        duration: 2000,
+        style: {
+          background: "#0EA5A4",
+          color: "#fff",
+        },
+      });
+    }
   };
 
   const handleWishlistToggle = async () => {
@@ -137,13 +164,9 @@ const ProductDetails = () => {
       if (isInWishlist) {
         await dispatch(removeFromWishlist(product._id)).unwrap();
         toast.success("Removed from wishlist", { duration: 2000 });
-        // Fetch updated wishlist
-        await dispatch(fetchWishlist()).unwrap();
       } else {
         await dispatch(addToWishlist(product._id)).unwrap();
         toast.success("Added to wishlist", { duration: 2000 });
-        // Fetch updated wishlist
-        await dispatch(fetchWishlist()).unwrap();
       }
     } catch (err) {
       toast.error(err || "Something went wrong");
@@ -299,65 +322,131 @@ const ProductDetails = () => {
                   </p>
                 </div>
 
-                {/* Quantity Selector */}
-                <div className="space-y-1.5 sm:space-y-2">
-                  <label className="text-xs sm:text-sm font-medium text-gray-700">
-                    Quantity
-                  </label>
-                  <div className="flex items-center gap-3 sm:gap-4">
-                    <button
-                      onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                      disabled={quantity <= 1}
-                      className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg border-2 border-gray-300 flex items-center justify-center text-gray-700 hover:border-primary-500 hover:text-primary-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-lg sm:text-xl"
-                    >
-                      -
-                    </button>
-                    <span className="text-lg sm:text-xl font-semibold w-10 sm:w-12 text-center">
-                      {quantity}
-                    </span>
-                    <button
-                      onClick={() => {
-                        if (quantity >= product.quantity) {
-                          toast.error(
-                            `Only ${product.quantity} items available`,
-                            {
-                              duration: 2000,
-                            }
-                          );
-                        } else {
-                          setQuantity(quantity + 1);
-                        }
-                      }}
-                      disabled={quantity >= product.quantity}
-                      className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg border-2 border-gray-300 flex items-center justify-center text-gray-700 hover:border-primary-500 hover:text-primary-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-lg sm:text-xl"
-                    >
-                      +
-                    </button>
+                {/* Quantity Selector - Only show if NOT in cart */}
+                {!cartItem && (
+                  <div className="space-y-1.5 sm:space-y-2">
+                    <label className="text-xs sm:text-sm font-medium text-gray-700">
+                      Quantity
+                    </label>
+                    <div className="flex items-center gap-3 sm:gap-4">
+                      <button
+                        onClick={() => setQuantity(Math.max(1, quantity - 1))}
+                        disabled={quantity <= 1}
+                        className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg border-2 border-gray-300 flex items-center justify-center text-gray-700 hover:border-primary-500 hover:text-primary-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-lg sm:text-xl"
+                      >
+                        -
+                      </button>
+                      <span className="text-lg sm:text-xl font-semibold w-10 sm:w-12 text-center">
+                        {quantity}
+                      </span>
+                      <button
+                        onClick={() => {
+                          if (quantity >= product.quantity) {
+                            toast.error(
+                              `Only ${product.quantity} items available`,
+                              {
+                                duration: 2000,
+                              }
+                            );
+                          } else {
+                            setQuantity(quantity + 1);
+                          }
+                        }}
+                        disabled={quantity >= product.quantity}
+                        className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg border-2 border-gray-300 flex items-center justify-center text-gray-700 hover:border-primary-500 hover:text-primary-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-lg sm:text-xl"
+                      >
+                        +
+                      </button>
+                    </div>
+                    {product.quantity > 0 && (
+                      <p className="text-[10px] sm:text-xs text-gray-500">
+                        {product.quantity} items available
+                      </p>
+                    )}
                   </div>
-                  {product.quantity > 0 && (
-                    <p className="text-[10px] sm:text-xs text-gray-500">
-                      {product.quantity} items available
+                )}
+
+                {/* Cart Quantity Controls - Show if item IS in cart */}
+                {cartItem && (
+                  <div className="space-y-1.5 sm:space-y-2">
+                    <label className="text-xs sm:text-sm font-medium text-gray-700">
+                      Quantity in Cart
+                    </label>
+                    <div className="flex items-center gap-3 sm:gap-4">
+                      <button
+                        onClick={() => {
+                          dispatch(decreaseQuantity(product._id));
+                          if (cartItem.orderQuantity === 1) {
+                            toast.success("Item removed from cart", {
+                              duration: 2000,
+                            });
+                          }
+                        }}
+                        className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg border-2 border-primary-500 bg-white flex items-center justify-center text-primary-500 hover:bg-primary-50 transition-colors text-lg sm:text-xl"
+                      >
+                        -
+                      </button>
+                      <span className="text-lg sm:text-xl font-semibold w-10 sm:w-12 text-center text-primary-600">
+                        {cartItem.orderQuantity || 1}
+                      </span>
+                      <button
+                        onClick={() => {
+                          if (cartItem.orderQuantity >= product.quantity) {
+                            toast.error(
+                              `Only ${product.quantity} items available`,
+                              { duration: 2000 }
+                            );
+                          } else {
+                            dispatch(increaseQuantity(product._id));
+                          }
+                        }}
+                        disabled={cartItem.orderQuantity >= product.quantity}
+                        className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg border-2 border-primary-500 bg-primary-500 flex items-center justify-center text-white hover:bg-primary-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-lg sm:text-xl"
+                      >
+                        +
+                      </button>
+                    </div>
+                    <p className="text-[10px] sm:text-xs text-primary-600 font-medium">
+                      ✓ Item in cart -{" "}
+                      {product.quantity - cartItem.orderQuantity} more available
                     </p>
-                  )}
-                </div>
+                  </div>
+                )}
 
                 {/* Action Buttons */}
                 <div className="flex flex-col xs:flex-row gap-2 sm:gap-3 lg:gap-4">
-                  <Button
-                    variant="primary"
-                    size="lg"
-                    onClick={handleAddToCart}
-                    icon={
-                      <AiOutlineShoppingCart
-                        size={20}
-                        className="sm:w-6 sm:h-6"
-                      />
-                    }
-                    disabled={product.quantity === 0}
-                    className="flex-1 text-sm sm:text-base"
-                  >
-                    Add to Cart
-                  </Button>
+                  {!cartItem ? (
+                    <Button
+                      variant="primary"
+                      size="lg"
+                      onClick={handleAddToCart}
+                      icon={
+                        <AiOutlineShoppingCart
+                          size={20}
+                          className="sm:w-6 sm:h-6"
+                        />
+                      }
+                      disabled={product.quantity === 0}
+                      className="flex-1 text-sm sm:text-base"
+                    >
+                      Add to Cart
+                    </Button>
+                  ) : (
+                    <Button
+                      variant="success"
+                      size="lg"
+                      onClick={() => navigate("/cart")}
+                      icon={
+                        <AiOutlineShoppingCart
+                          size={20}
+                          className="sm:w-6 sm:h-6"
+                        />
+                      }
+                      className="flex-1 text-sm sm:text-base"
+                    >
+                      Go to Cart
+                    </Button>
+                  )}
                   <Button
                     variant="outline"
                     size="lg"

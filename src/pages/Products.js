@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Layout from "../components/layout/layout";
 import axios from "axios";
 import { API_ENDPOINTS } from "../config/api";
@@ -41,7 +41,7 @@ const Products = () => {
   }, []);
 
   // Get products
-  const getAllProducts = async () => {
+  const getAllProducts = useCallback(async () => {
     try {
       setLoading(true);
       const { data } = await axios.get(API_ENDPOINTS.PRODUCT.LIST(page));
@@ -51,7 +51,7 @@ const Products = () => {
       setLoading(false);
       console.log(error);
     }
-  };
+  }, [page]);
 
   // Get total count
   const getTotal = async () => {
@@ -63,13 +63,8 @@ const Products = () => {
     }
   };
 
-  useEffect(() => {
-    if (page === 1) return;
-    loadMore();
-  }, [page]);
-
   // Load more
-  const loadMore = async () => {
+  const loadMore = useCallback(async () => {
     try {
       setLoading(true);
       const { data } = await axios.get(API_ENDPOINTS.PRODUCT.LIST(page));
@@ -79,7 +74,20 @@ const Products = () => {
       console.log(error);
       setLoading(false);
     }
-  };
+  }, [page, products]);
+
+  // Get filtered products
+  const filterProduct = useCallback(async () => {
+    try {
+      const { data } = await axios.post(API_ENDPOINTS.PRODUCT.FILTER, {
+        checked,
+        radio,
+      });
+      setProducts(data?.products);
+    } catch (error) {
+      console.log(error);
+    }
+  }, [checked, radio]);
 
   // Filter by category
   const handleFilter = (value, id) => {
@@ -93,25 +101,17 @@ const Products = () => {
   };
 
   useEffect(() => {
+    if (page === 1) return;
+    loadMore();
+  }, [page, loadMore]);
+
+  useEffect(() => {
     if (!checked.length && !radio.length) getAllProducts();
-  }, [checked.length, radio.length]);
+  }, [checked.length, radio.length, getAllProducts]);
 
   useEffect(() => {
     if (checked.length || radio.length) filterProduct();
-  }, [checked, radio]);
-
-  // Get filtered products
-  const filterProduct = async () => {
-    try {
-      const { data } = await axios.post(API_ENDPOINTS.PRODUCT.FILTER, {
-        checked,
-        radio,
-      });
-      setProducts(data?.products);
-    } catch (error) {
-      console.log(error);
-    }
-  };
+  }, [checked, radio, filterProduct]);
 
   return (
     <Layout title={"All Products - ShopHub"}>

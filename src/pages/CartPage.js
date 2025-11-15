@@ -1,10 +1,9 @@
 import React, { useState, useEffect } from "react";
 import Layout from "./../components/layout/layout";
-import { useCart } from "../context/cart";
 import { useAuth } from "../context/auth";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
-import axios from "axios";
+
 import { API_ENDPOINTS } from "../config/api";
 import toast from "react-hot-toast";
 import { applyCoupon, clearAppliedCoupon } from "../redux/slices/couponSlice";
@@ -14,6 +13,11 @@ import {
   verifyRazorpayPayment,
   clearPaymentState,
 } from "../redux/slices/paymentSlice";
+import {
+  updateCartItemQuantity,
+  removeFromCart,
+  clearCart,
+} from "../redux/slices/cartSlice";
 import {
   AiOutlineShoppingCart,
   AiOutlineDelete,
@@ -27,7 +31,7 @@ import Card from "../components/UI/Card";
 
 const CartPage = () => {
   const [auth] = useAuth();
-  const [cart, setCart] = useCart();
+  const { items: cart } = useSelector((state) => state.cart);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const {
@@ -35,21 +39,9 @@ const CartPage = () => {
     discount,
     loading: couponLoading,
   } = useSelector((state) => state.coupon);
-  const { razorpayKey, loading: paymentLoading } = useSelector(
-    (state) => state.payment
-  );
+  const { razorpayKey } = useSelector((state) => state.payment);
   const [loading, setLoading] = useState(false);
-  const [quantities, setQuantities] = useState({});
   const [couponCode, setCouponCode] = useState("");
-
-  useEffect(() => {
-    // Initialize quantities for each cart item from orderQuantity or default to 1
-    const initialQuantities = {};
-    cart.forEach((item) => {
-      initialQuantities[item._id] = item.orderQuantity || 1;
-    });
-    setQuantities(initialQuantities);
-  }, [cart]);
 
   //total price
   const subtotal = () => {
@@ -60,7 +52,6 @@ const CartPage = () => {
     });
     return total;
   };
-  console.log("Subtotal:", subtotal());
 
   const calculateTotal = () => {
     const sub = subtotal();
@@ -71,32 +62,14 @@ const CartPage = () => {
 
   const updateQuantity = (productId, newQty) => {
     if (newQty >= 1) {
-      // Update quantities state
-      setQuantities({
-        ...quantities,
-        [productId]: newQty,
-      });
-
-      // Update cart with new orderQuantity
-      const updatedCart = cart.map((item) => {
-        if (item._id === productId) {
-          return { ...item, orderQuantity: newQty };
-        }
-        return item;
-      });
-      setCart(updatedCart);
-      localStorage.setItem("cart", JSON.stringify(updatedCart));
+      dispatch(updateCartItemQuantity({ id: productId, quantity: newQty }));
     }
   };
 
   //delete item
   const removeCartItem = (pid) => {
     try {
-      let myCart = [...cart];
-      let index = myCart.findIndex((item) => item._id === pid);
-      myCart.splice(index, 1);
-      setCart(myCart);
-      localStorage.setItem("cart", JSON.stringify(myCart));
+      dispatch(removeFromCart(pid));
       toast.success("Item removed from cart");
     } catch (error) {
       console.log(error);
@@ -191,7 +164,7 @@ const CartPage = () => {
               id: item._id,
               name: item.name,
               price: item.price,
-              quantity: quantities[item._id] || item.orderQuantity || 1,
+              quantity: item.orderQuantity || 1,
             }));
 
             // Verify payment
@@ -205,8 +178,7 @@ const CartPage = () => {
             ).unwrap();
 
             setLoading(false);
-            localStorage.removeItem("cart");
-            setCart([]);
+            dispatch(clearCart());
             dispatch(clearAppliedCoupon());
             navigate("/dashborad/user/orders");
             toast.success("Payment Completed Successfully!");
@@ -327,7 +299,7 @@ const CartPage = () => {
                               onClick={() =>
                                 updateQuantity(
                                   product._id,
-                                  (quantities[product._id] || 1) - 1
+                                  (product.orderQuantity || 1) - 1
                                 )
                               }
                               className="w-8 h-8 rounded-lg border-2 border-gray-300 flex items-center justify-center text-gray-700 hover:border-primary-500 hover:text-primary-500 transition-colors"
@@ -335,13 +307,13 @@ const CartPage = () => {
                               <AiOutlineMinus size={14} />
                             </button>
                             <span className="text-base font-semibold w-10 text-center">
-                              {quantities[product._id] || 1}
+                              {product.orderQuantity || 1}
                             </span>
                             <button
                               onClick={() =>
                                 updateQuantity(
                                   product._id,
-                                  (quantities[product._id] || 1) + 1
+                                  (product.orderQuantity || 1) + 1
                                 )
                               }
                               className="w-8 h-8 rounded-lg border-2 border-gray-300 flex items-center justify-center text-gray-700 hover:border-primary-500 hover:text-primary-500 transition-colors"
