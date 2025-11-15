@@ -72,27 +72,30 @@ const Profile = () => {
 
   return (
     <Layout title={"Your Profile"}>
-      <div className="min-h-screen bg-gray-50 py-8">
-        <div className="container mx-auto px-4 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+      <div className="min-h-screen bg-gray-50 py-4 sm:py-6 lg:py-8">
+        <div className="container mx-auto px-3 sm:px-4 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 sm:gap-6">
             {/* Sidebar */}
             <div className="lg:col-span-1">
               <UserMenu />
             </div>
 
             {/* Main Content */}
-            <div className="lg:col-span-3 space-y-6">
+            <div className="lg:col-span-3 space-y-4 sm:space-y-6">
               {/* Header */}
-              <Card>
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-xl flex items-center justify-center">
-                    <AiOutlineUser size={24} className="text-white" />
+              <Card className="p-4 sm:p-6">
+                <div className="flex items-center gap-3 sm:gap-4">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0">
+                    <AiOutlineUser
+                      size={20}
+                      className="text-white sm:w-6 sm:h-6"
+                    />
                   </div>
-                  <div>
-                    <h1 className="text-2xl font-bold text-gray-900">
+                  <div className="min-w-0">
+                    <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 truncate">
                       Edit Profile
                     </h1>
-                    <p className="text-gray-600">
+                    <p className="text-sm sm:text-base text-gray-600">
                       Update your personal information
                     </p>
                   </div>
@@ -100,14 +103,17 @@ const Profile = () => {
               </Card>
 
               {/* Profile Form */}
-              <Card>
-                <form onSubmit={handleSubmit} className="space-y-6">
+              <Card className="p-4 sm:p-6">
+                <form
+                  onSubmit={handleSubmit}
+                  className="space-y-4 sm:space-y-6"
+                >
                   {/* Personal Information Section */}
                   <div>
-                    <h2 className="text-lg font-semibold text-gray-900 mb-4 pb-2 border-b">
+                    <h2 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4 pb-2 border-b">
                       Personal Information
                     </h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                       <Input
                         label="Full Name"
                         type="text"
@@ -132,10 +138,10 @@ const Profile = () => {
 
                   {/* Contact Information Section */}
                   <div>
-                    <h2 className="text-lg font-semibold text-gray-900 mb-4 pb-2 border-b">
+                    <h2 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4 pb-2 border-b">
                       Contact Information
                     </h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                       <Input
                         label="Phone Number"
                         type="text"
@@ -160,10 +166,10 @@ const Profile = () => {
 
                   {/* Security Section */}
                   <div>
-                    <h2 className="text-lg font-semibold text-gray-900 mb-4 pb-2 border-b">
+                    <h2 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4 pb-2 border-b">
                       Security
                     </h2>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                       <Input
                         label="New Password"
                         type="password"
@@ -173,9 +179,11 @@ const Profile = () => {
                         icon={<AiOutlineLock size={20} />}
                       />
                       <div className="flex items-end">
-                        <div className="bg-blue-50 border border-blue-200 rounded-xl p-4 text-sm text-blue-700">
-                          <p className="font-medium mb-1">Password Tips:</p>
-                          <ul className="text-xs space-y-1">
+                        <div className="bg-blue-50 border border-blue-200 rounded-lg sm:rounded-xl p-3 sm:p-4 text-xs sm:text-sm text-blue-700">
+                          <p className="font-medium mb-0.5 sm:mb-1">
+                            Password Tips:
+                          </p>
+                          <ul className="text-[10px] sm:text-xs space-y-0.5 sm:space-y-1">
                             <li>• Use 8+ characters</li>
                             <li>• Mix letters and numbers</li>
                             <li>• Include special characters</li>
@@ -186,13 +194,16 @@ const Profile = () => {
                   </div>
 
                   {/* Submit Button */}
-                  <div className="flex justify-end pt-4">
+                  <div className="flex justify-end pt-2 sm:pt-4">
                     <Button
                       type="submit"
                       variant="primary"
                       size="lg"
                       disabled={loading}
-                      icon={<AiOutlineSave size={20} />}
+                      icon={
+                        <AiOutlineSave size={18} className="sm:w-5 sm:h-5" />
+                      }
+                      className="w-full sm:w-auto text-sm sm:text-base"
                     >
                       {loading ? "Updating..." : "Update Profile"}
                     </Button>

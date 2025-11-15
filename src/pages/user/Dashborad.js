@@ -43,27 +43,30 @@ const Dashboard = () => {
 
   return (
     <Layout title={"Dashboard - Ecommerce App"}>
-      <div className="min-h-screen bg-gray-50 py-8">
-        <div className="container mx-auto px-4 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+      <div className="min-h-screen bg-gray-50 py-4 sm:py-6 lg:py-8">
+        <div className="container mx-auto px-3 sm:px-4 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 sm:gap-6">
             {/* Sidebar */}
             <div className="lg:col-span-1">
               <UserMenu />
             </div>
 
             {/* Main Content */}
-            <div className="lg:col-span-3 space-y-6">
+            <div className="lg:col-span-3 space-y-4 sm:space-y-6">
               {/* Welcome Card */}
-              <Card>
-                <div className="flex items-center gap-4 mb-6">
-                  <div className="w-16 h-16 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-2xl flex items-center justify-center">
-                    <AiOutlineUser size={32} className="text-white" />
+              <Card className="p-4 sm:p-6">
+                <div className="flex items-center gap-3 sm:gap-4 mb-4 sm:mb-6">
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-xl sm:rounded-2xl flex items-center justify-center flex-shrink-0">
+                    <AiOutlineUser
+                      size={24}
+                      className="text-white sm:w-7 sm:h-7 lg:w-8 lg:h-8"
+                    />
                   </div>
-                  <div>
-                    <h1 className="text-2xl font-bold text-gray-900">
+                  <div className="min-w-0">
+                    <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 truncate">
                       Welcome, {auth?.user?.name}!
                     </h1>
-                    <p className="text-gray-600">
+                    <p className="text-sm sm:text-base text-gray-600">
                       Manage your account and view your activity
                     </p>
                   </div>
@@ -71,23 +74,23 @@ const Dashboard = () => {
               </Card>
 
               {/* User Information Grid */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                 {userInfo.map((info, index) => (
                   <Card
                     key={index}
-                    className="hover:shadow-soft-lg transition-shadow duration-300"
+                    className="hover:shadow-soft-lg transition-shadow duration-300 p-4 sm:p-6"
                   >
-                    <div className="flex items-start gap-4">
+                    <div className="flex items-start gap-3 sm:gap-4">
                       <div
-                        className={`w-12 h-12 bg-gradient-to-br ${info.color} rounded-xl flex items-center justify-center flex-shrink-0`}
+                        className={`w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br ${info.color} rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0`}
                       >
                         <span className="text-white">{info.icon}</span>
                       </div>
                       <div className="flex-1 min-w-0">
-                        <p className="text-sm text-gray-500 mb-1">
+                        <p className="text-xs sm:text-sm text-gray-500 mb-0.5 sm:mb-1">
                           {info.label}
                         </p>
-                        <p className="text-lg font-semibold text-gray-900 break-words">
+                        <p className="text-base sm:text-lg font-semibold text-gray-900 break-words">
                           {info.value}
                         </p>
                       </div>
@@ -97,28 +100,34 @@ const Dashboard = () => {
               </div>
 
               {/* Quick Stats */}
-              <Card>
-                <h2 className="text-xl font-bold text-gray-900 mb-6">
+              <Card className="p-4 sm:p-6">
+                <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-4 sm:mb-6">
                   Account Overview
                 </h2>
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                  <div className="text-center p-6 bg-gradient-to-br from-primary-50 to-primary-100 rounded-xl">
-                    <div className="text-3xl font-bold text-primary-600 mb-2">
+                <div className="grid grid-cols-1 xs:grid-cols-3 gap-4 sm:gap-6">
+                  <div className="text-center p-4 sm:p-6 bg-gradient-to-br from-primary-50 to-primary-100 rounded-lg sm:rounded-xl">
+                    <div className="text-2xl sm:text-3xl font-bold text-primary-600 mb-1.5 sm:mb-2">
                       0
                     </div>
-                    <div className="text-sm text-gray-600">Total Orders</div>
+                    <div className="text-xs sm:text-sm text-gray-600">
+                      Total Orders
+                    </div>
                   </div>
-                  <div className="text-center p-6 bg-gradient-to-br from-secondary-50 to-secondary-100 rounded-xl">
-                    <div className="text-3xl font-bold text-secondary-600 mb-2">
+                  <div className="text-center p-4 sm:p-6 bg-gradient-to-br from-secondary-50 to-secondary-100 rounded-lg sm:rounded-xl">
+                    <div className="text-2xl sm:text-3xl font-bold text-secondary-600 mb-1.5 sm:mb-2">
                       $0
                     </div>
-                    <div className="text-sm text-gray-600">Total Spent</div>
+                    <div className="text-xs sm:text-sm text-gray-600">
+                      Total Spent
+                    </div>
                   </div>
-                  <div className="text-center p-6 bg-gradient-to-br from-green-50 to-green-100 rounded-xl">
-                    <div className="text-3xl font-bold text-green-600 mb-2">
+                  <div className="text-center p-4 sm:p-6 bg-gradient-to-br from-green-50 to-green-100 rounded-lg sm:rounded-xl">
+                    <div className="text-2xl sm:text-3xl font-bold text-green-600 mb-1.5 sm:mb-2">
                       Active
                     </div>
-                    <div className="text-sm text-gray-600">Account Status</div>
+                    <div className="text-xs sm:text-sm text-gray-600">
+                      Account Status
+                    </div>
                   </div>
                 </div>
               </Card>

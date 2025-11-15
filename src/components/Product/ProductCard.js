@@ -124,7 +124,7 @@ const ProductCard = ({ product }) => {
       </div>
 
       {/* Product Info */}
-      <div className="p-5 space-y-3">
+      <div className="p-4 space-y-3">
         <div>
           <h3 className="font-semibold text-gray-900 text-lg line-clamp-1 group-hover:text-primary-500 transition-colors">
             {product.name}
@@ -139,7 +139,7 @@ const ProductCard = ({ product }) => {
           <span className="text-xs text-gray-500">(125)</span>
         </div>
 
-        <div className="flex items-center justify-between pt-2">
+        <div className="flex  gap-4 items-center justify-between pt-2">
           <div>
             <div className="text-2xl font-bold text-gray-900">
               ${product.price}

@@ -67,27 +67,27 @@ const CreateProduct = () => {
 
   return (
     <Layout title={"Dashboard - Create Product"}>
-      <div className="min-h-screen bg-gray-50 py-8">
-        <div className="container mx-auto px-4 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+      <div className="min-h-screen bg-gray-50 py-4 sm:py-6 lg:py-8">
+        <div className="container mx-auto px-3 sm:px-4 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 sm:gap-6">
             {/* Sidebar */}
             <div className="lg:col-span-1">
               <AdminMenu />
             </div>
 
             {/* Main Content */}
-            <div className="lg:col-span-3 space-y-6">
+            <div className="lg:col-span-3 space-y-4 sm:space-y-6">
               {/* Header */}
-              <Card>
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-xl flex items-center justify-center">
-                    <BiPackage size={24} className="text-white" />
+              <Card className="p-4 sm:p-6">
+                <div className="flex items-center gap-3 sm:gap-4">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0">
+                    <BiPackage size={20} className="text-white sm:w-6 sm:h-6" />
                   </div>
-                  <div>
-                    <h1 className="text-2xl font-bold text-gray-900">
+                  <div className="min-w-0">
+                    <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 truncate">
                       Create Product
                     </h1>
-                    <p className="text-gray-600">
+                    <p className="text-sm sm:text-base text-gray-600">
                       Add a new product to your store
                     </p>
                   </div>
@@ -95,8 +95,11 @@ const CreateProduct = () => {
               </Card>
 
               {/* Create Form */}
-              <Card>
-                <form onSubmit={handleCreate} className="space-y-6">
+              <Card className="p-4 sm:p-6">
+                <form
+                  onSubmit={handleCreate}
+                  className="space-y-4 sm:space-y-6"
+                >
                   {/* Category Selection */}
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-2">
@@ -123,26 +126,26 @@ const CreateProduct = () => {
                     <label className="block text-sm font-medium text-gray-700 mb-2">
                       Product Photo *
                     </label>
-                    <label className="flex flex-col items-center justify-center w-full h-48 border-2 border-gray-300 border-dashed rounded-xl cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors">
+                    <label className="flex flex-col items-center justify-center w-full h-40 sm:h-48 border-2 border-gray-300 border-dashed rounded-lg sm:rounded-xl cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors">
                       {photo ? (
                         <img
                           src={URL.createObjectURL(photo)}
                           alt="product_photo"
-                          className="h-full w-full object-contain rounded-xl"
+                          className="h-full w-full object-contain rounded-lg sm:rounded-xl"
                         />
                       ) : (
-                        <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                        <div className="flex flex-col items-center justify-center pt-4 pb-5 sm:pt-5 sm:pb-6">
                           <AiOutlineCloudUpload
-                            size={48}
-                            className="text-gray-400 mb-3"
+                            size={40}
+                            className="text-gray-400 mb-2 sm:mb-3 sm:w-12 sm:h-12"
                           />
-                          <p className="mb-2 text-sm text-gray-500">
+                          <p className="mb-1.5 sm:mb-2 text-xs sm:text-sm text-gray-500">
                             <span className="font-semibold">
                               Click to upload
                             </span>{" "}
                             or drag and drop
                           </p>
-                          <p className="text-xs text-gray-500">
+                          <p className="text-[10px] sm:text-xs text-gray-500">
                             PNG, JPG or JPEG
                           </p>
                         </div>
@@ -159,7 +162,7 @@ const CreateProduct = () => {
                   </div>
 
                   {/* Product Details */}
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                     <Input
                       label="Product Name"
                       type="text"
@@ -186,14 +189,14 @@ const CreateProduct = () => {
                     <textarea
                       value={description}
                       placeholder="Enter product description"
-                      className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all"
+                      className="w-full px-3 sm:px-4 py-2 sm:py-2.5 text-sm sm:text-base border border-gray-300 rounded-lg sm:rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all"
                       onChange={(e) => setDescription(e.target.value)}
                       rows={4}
                       required
                     />
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                     <Input
                       label="Quantity"
                       type="number"
@@ -221,12 +224,15 @@ const CreateProduct = () => {
                   </div>
 
                   {/* Submit Button */}
-                  <div className="flex justify-end pt-4">
+                  <div className="flex justify-end pt-2 sm:pt-4">
                     <Button
                       type="submit"
                       variant="primary"
                       size="lg"
-                      icon={<AiOutlinePlus size={20} />}
+                      icon={
+                        <AiOutlinePlus size={18} className="sm:w-5 sm:h-5" />
+                      }
+                      className="w-full sm:w-auto text-sm sm:text-base"
                     >
                       CREATE PRODUCT
                     </Button>

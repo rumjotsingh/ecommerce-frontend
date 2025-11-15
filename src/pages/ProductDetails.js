@@ -203,15 +203,15 @@ const ProductDetails = () => {
 
   return (
     <Layout title={`${product?.name} - Product Details`}>
-      <div className="bg-gray-50 py-12">
-        <div className="container mx-auto px-4 lg:px-8">
+      <div className="bg-gray-50 py-6 sm:py-8 lg:py-12">
+        <div className="container mx-auto px-3 sm:px-4 lg:px-8">
           {/* Product Section */}
-          <div className="bg-white rounded-3xl shadow-soft-lg p-8 mb-12">
-            <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
+          <div className="bg-white rounded-2xl sm:rounded-3xl shadow-soft-lg p-4 sm:p-6 lg:p-8 mb-6 sm:mb-8 lg:mb-12">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 sm:gap-8 lg:gap-12">
               {/* Image Gallery */}
-              <div className="space-y-4">
+              <div className="space-y-3 sm:space-y-4">
                 {/* Main Image */}
-                <div className="aspect-square bg-gray-100 rounded-2xl overflow-hidden">
+                <div className="aspect-square bg-gray-100 rounded-xl sm:rounded-2xl overflow-hidden">
                   <img
                     src={productImages[selectedImage]}
                     alt={product.name}
@@ -221,7 +221,7 @@ const ProductDetails = () => {
 
                 {/* Thumbnail Images */}
                 {productImages.length > 1 && (
-                  <div className="grid grid-cols-4 gap-4">
+                  <div className="grid grid-cols-4 gap-2 sm:gap-3 lg:gap-4">
                     {productImages.map((img, index) => (
                       <button
                         key={index}
@@ -244,33 +244,37 @@ const ProductDetails = () => {
               </div>
 
               {/* Product Info */}
-              <div className="space-y-6">
+              <div className="space-y-4 sm:space-y-5 lg:space-y-6">
                 {/* Category Badge */}
-                <div className="flex items-center gap-3">
-                  <Badge variant="primary">{product?.category?.name}</Badge>
+                <div className="flex items-center gap-2 sm:gap-2.5 lg:gap-3 flex-wrap">
+                  <Badge variant="primary" className="text-xs sm:text-sm">
+                    {product?.category?.name}
+                  </Badge>
                   {product.quantity < 10 && product.quantity > 0 && (
-                    <Badge variant="warning">
+                    <Badge variant="warning" className="text-xs sm:text-sm">
                       Only {product.quantity} left
                     </Badge>
                   )}
                   {product.quantity === 0 && (
-                    <Badge variant="danger">Out of Stock</Badge>
+                    <Badge variant="danger" className="text-xs sm:text-sm">
+                      Out of Stock
+                    </Badge>
                   )}
                 </div>
 
                 {/* Title */}
-                <h1 className="text-4xl font-bold text-gray-900">
+                <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-gray-900 leading-tight">
                   {product.name}
                 </h1>
 
                 {/* Rating */}
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-3 sm:gap-4">
                   <Rating rating={4.5} size="lg" showCount count={125} />
                 </div>
 
                 {/* Price */}
-                <div className="flex items-baseline gap-4">
-                  <div className="text-4xl font-bold text-primary-500">
+                <div className="flex items-baseline gap-2.5 sm:gap-3 lg:gap-4 flex-wrap">
+                  <div className="text-3xl sm:text-3xl lg:text-4xl font-bold text-primary-500">
                     ${product.price}
                   </div>
                   {product.originalPrice && (
@@ -286,29 +290,29 @@ const ProductDetails = () => {
                 </div>
 
                 {/* Description */}
-                <div className="space-y-2">
-                  <h3 className="text-lg font-semibold text-gray-900">
+                <div className="space-y-1.5 sm:space-y-2">
+                  <h3 className="text-base sm:text-lg font-semibold text-gray-900">
                     Description
                   </h3>
-                  <p className="text-gray-600 leading-relaxed">
+                  <p className="text-sm sm:text-base text-gray-600 leading-relaxed">
                     {product.description}
                   </p>
                 </div>
 
                 {/* Quantity Selector */}
-                <div className="space-y-2">
-                  <label className="text-sm font-medium text-gray-700">
+                <div className="space-y-1.5 sm:space-y-2">
+                  <label className="text-xs sm:text-sm font-medium text-gray-700">
                     Quantity
                   </label>
-                  <div className="flex items-center gap-4">
+                  <div className="flex items-center gap-3 sm:gap-4">
                     <button
                       onClick={() => setQuantity(Math.max(1, quantity - 1))}
                       disabled={quantity <= 1}
-                      className="w-10 h-10 rounded-lg border-2 border-gray-300 flex items-center justify-center text-gray-700 hover:border-primary-500 hover:text-primary-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg border-2 border-gray-300 flex items-center justify-center text-gray-700 hover:border-primary-500 hover:text-primary-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-lg sm:text-xl"
                     >
                       -
                     </button>
-                    <span className="text-xl font-semibold w-12 text-center">
+                    <span className="text-lg sm:text-xl font-semibold w-10 sm:w-12 text-center">
                       {quantity}
                     </span>
                     <button
@@ -325,27 +329,32 @@ const ProductDetails = () => {
                         }
                       }}
                       disabled={quantity >= product.quantity}
-                      className="w-10 h-10 rounded-lg border-2 border-gray-300 flex items-center justify-center text-gray-700 hover:border-primary-500 hover:text-primary-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                      className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg border-2 border-gray-300 flex items-center justify-center text-gray-700 hover:border-primary-500 hover:text-primary-500 transition-colors disabled:opacity-50 disabled:cursor-not-allowed text-lg sm:text-xl"
                     >
                       +
                     </button>
                   </div>
                   {product.quantity > 0 && (
-                    <p className="text-xs text-gray-500">
+                    <p className="text-[10px] sm:text-xs text-gray-500">
                       {product.quantity} items available
                     </p>
                   )}
                 </div>
 
                 {/* Action Buttons */}
-                <div className="flex flex-wrap gap-4">
+                <div className="flex flex-col xs:flex-row gap-2 sm:gap-3 lg:gap-4">
                   <Button
                     variant="primary"
                     size="lg"
                     onClick={handleAddToCart}
-                    icon={<AiOutlineShoppingCart size={24} />}
+                    icon={
+                      <AiOutlineShoppingCart
+                        size={20}
+                        className="sm:w-6 sm:h-6"
+                      />
+                    }
                     disabled={product.quantity === 0}
-                    className="flex-1"
+                    className="flex-1 text-sm sm:text-base"
                   >
                     Add to Cart
                   </Button>
@@ -353,57 +362,63 @@ const ProductDetails = () => {
                     variant="outline"
                     size="lg"
                     onClick={handleWishlistToggle}
+                    className="xs:w-auto"
                   >
                     {isInWishlist ? (
-                      <AiFillHeart size={24} className="text-red-500" />
+                      <AiFillHeart
+                        size={20}
+                        className="text-red-500 sm:w-6 sm:h-6"
+                      />
                     ) : (
-                      <AiOutlineHeart size={24} />
+                      <AiOutlineHeart size={20} className="sm:w-6 sm:h-6" />
                     )}
                   </Button>
-                  <Button variant="outline" size="lg">
-                    <AiOutlineShareAlt size={24} />
+                  <Button variant="outline" size="lg" className="xs:w-auto">
+                    <AiOutlineShareAlt size={20} className="sm:w-6 sm:h-6" />
                   </Button>
                 </div>
 
                 {/* Features */}
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 pt-6 border-t">
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-primary-100 rounded-xl flex items-center justify-center">
-                      <FaShippingFast className="text-primary-500" size={24} />
+                <div className="grid grid-cols-1 xs:grid-cols-3 gap-3 sm:gap-4 pt-4 sm:pt-6 border-t">
+                  <div className="flex items-center gap-2 sm:gap-3">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-primary-100 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0">
+                      <FaShippingFast className="text-primary-500" size={18} />
                     </div>
                     <div>
-                      <div className="text-sm font-semibold text-gray-900">
+                      <div className="text-xs sm:text-sm font-semibold text-gray-900">
                         Free Delivery
                       </div>
-                      <div className="text-xs text-gray-600">
+                      <div className="text-[10px] sm:text-xs text-gray-600">
                         On orders $50+
                       </div>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-secondary-100 rounded-xl flex items-center justify-center">
-                      <BiShield className="text-secondary-500" size={24} />
+                  <div className="flex items-center gap-2 sm:gap-3">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-secondary-100 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0">
+                      <BiShield className="text-secondary-500" size={18} />
                     </div>
                     <div>
-                      <div className="text-sm font-semibold text-gray-900">
+                      <div className="text-xs sm:text-sm font-semibold text-gray-900">
                         Secure Payment
                       </div>
-                      <div className="text-xs text-gray-600">
+                      <div className="text-[10px] sm:text-xs text-gray-600">
                         100% protected
                       </div>
                     </div>
                   </div>
 
-                  <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
-                      <BiPackage className="text-green-500" size={24} />
+                  <div className="flex items-center gap-2 sm:gap-3">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-green-100 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0">
+                      <BiPackage className="text-green-500" size={18} />
                     </div>
                     <div>
-                      <div className="text-sm font-semibold text-gray-900">
+                      <div className="text-xs sm:text-sm font-semibold text-gray-900">
                         Easy Returns
                       </div>
-                      <div className="text-xs text-gray-600">30-day policy</div>
+                      <div className="text-[10px] sm:text-xs text-gray-600">
+                        30-day policy
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -412,14 +427,15 @@ const ProductDetails = () => {
           </div>
 
           {/* Reviews Section */}
-          <div className="bg-white rounded-3xl shadow-soft-lg p-8 mb-12">
-            <div className="flex items-center justify-between mb-8">
-              <h2 className="text-3xl font-bold text-gray-900">
+          <div className="bg-white rounded-2xl sm:rounded-3xl shadow-soft-lg p-4 sm:p-6 lg:p-8 mb-6 sm:mb-8 lg:mb-12">
+            <div className="flex flex-col xs:flex-row items-start xs:items-center justify-between gap-3 sm:gap-4 lg:gap-0 mb-6 sm:mb-8">
+              <h2 className="text-2xl sm:text-2xl lg:text-3xl font-bold text-gray-900">
                 Customer Reviews
               </h2>
               <Button
                 variant="primary"
                 onClick={() => setShowReviewForm(!showReviewForm)}
+                className="w-full xs:w-auto text-sm sm:text-base"
               >
                 Write a Review
               </Button>
@@ -429,7 +445,7 @@ const ProductDetails = () => {
             {showReviewForm && (
               <form
                 onSubmit={handleSubmitReview}
-                className="mb-8 p-6 bg-gray-50 rounded-2xl"
+                className="mb-6 sm:mb-8 p-4 sm:p-6 bg-gray-50 rounded-xl sm:rounded-2xl"
               >
                 <h3 className="text-xl font-semibold text-gray-900 mb-4">
                   Write Your Review
@@ -557,19 +573,21 @@ const ProductDetails = () => {
           </div>
 
           {/* Similar Products */}
-          <div className="space-y-8">
+          <div className="space-y-6 sm:space-y-8">
             <div className="flex items-center justify-between">
-              <h2 className="text-3xl font-bold text-gray-900">
+              <h2 className="text-2xl sm:text-2xl lg:text-3xl font-bold text-gray-900">
                 Similar Products
               </h2>
             </div>
 
             {relatedProducts.length < 1 ? (
-              <div className="text-center py-12 bg-white rounded-2xl">
-                <p className="text-gray-600">No similar products found</p>
+              <div className="text-center py-8 sm:py-12 bg-white rounded-xl sm:rounded-2xl">
+                <p className="text-sm sm:text-base text-gray-600">
+                  No similar products found
+                </p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
                 {relatedProducts?.map((p) => (
                   <ProductCard key={p._id} product={p} />
                 ))}

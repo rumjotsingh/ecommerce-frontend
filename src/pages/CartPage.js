@@ -283,15 +283,15 @@ const CartPage = () => {
               </div>
             </Card>
           ) : (
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
               {/* Cart Items */}
-              <div className="lg:col-span-2 space-y-4">
+              <div className="xl:col-span-2 space-y-4">
                 {cart?.map((product) => (
                   <Card key={product._id} hover>
-                    <div className="flex flex-col sm:flex-row gap-6">
+                    <div className="flex flex-col md:flex-row gap-4 p-4">
                       {/* Product Image */}
                       <div
-                        className="w-full sm:w-32 h-32 bg-gray-100 rounded-xl overflow-hidden flex-shrink-0 cursor-pointer"
+                        className="w-full md:w-28 h-28 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0 cursor-pointer"
                         onClick={() => navigate(`/product/${product.slug}`)}
                       >
                         <img
@@ -302,27 +302,27 @@ const CartPage = () => {
                       </div>
 
                       {/* Product Details */}
-                      <div className="flex-1 space-y-3">
-                        <div>
+                      <div className="flex-1 flex flex-col justify-between min-w-0">
+                        <div className="space-y-2">
                           <h3
-                            className="text-lg font-semibold text-gray-900 hover:text-primary-500 cursor-pointer transition-colors"
+                            className="text-base md:text-lg font-semibold text-gray-900 hover:text-primary-500 cursor-pointer transition-colors truncate"
                             onClick={() => navigate(`/product/${product.slug}`)}
                           >
                             {product.name}
                           </h3>
-                          <p className="text-sm text-gray-600 line-clamp-2">
+                          <p className="text-xs md:text-sm text-gray-600 line-clamp-1 md:line-clamp-2">
                             {product.description}
                           </p>
                         </div>
 
-                        <div className="flex flex-wrap items-center justify-between gap-4">
+                        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mt-3">
                           {/* Price */}
-                          <div className="text-2xl font-bold text-primary-500">
+                          <div className="text-xl md:text-2xl font-bold text-primary-500">
                             ${product.price}
                           </div>
 
                           {/* Quantity Controls */}
-                          <div className="flex items-center gap-3">
+                          <div className="flex items-center gap-2">
                             <button
                               onClick={() =>
                                 updateQuantity(
@@ -332,9 +332,9 @@ const CartPage = () => {
                               }
                               className="w-8 h-8 rounded-lg border-2 border-gray-300 flex items-center justify-center text-gray-700 hover:border-primary-500 hover:text-primary-500 transition-colors"
                             >
-                              <AiOutlineMinus size={16} />
+                              <AiOutlineMinus size={14} />
                             </button>
-                            <span className="text-lg font-semibold w-12 text-center">
+                            <span className="text-base font-semibold w-10 text-center">
                               {quantities[product._id] || 1}
                             </span>
                             <button
@@ -346,16 +346,16 @@ const CartPage = () => {
                               }
                               className="w-8 h-8 rounded-lg border-2 border-gray-300 flex items-center justify-center text-gray-700 hover:border-primary-500 hover:text-primary-500 transition-colors"
                             >
-                              <AiOutlinePlus size={16} />
+                              <AiOutlinePlus size={14} />
                             </button>
                           </div>
 
                           {/* Remove Button */}
                           <button
                             onClick={() => removeCartItem(product._id)}
-                            className="flex items-center gap-2 px-4 py-2 text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                            className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-red-500 hover:bg-red-50 rounded-lg transition-colors"
                           >
-                            <AiOutlineDelete size={20} />
+                            <AiOutlineDelete size={18} />
                             <span className="font-medium">Remove</span>
                           </button>
                         </div>
@@ -366,31 +366,31 @@ const CartPage = () => {
               </div>
 
               {/* Order Summary */}
-              <div className="lg:col-span-1">
-                <div className="sticky top-24">
-                  <Card>
-                    <h2 className="text-2xl font-bold text-gray-900 mb-6">
+              <div className="xl:col-span-1">
+                <div className="sticky top-20">
+                  <Card className="p-6">
+                    <h2 className="text-xl md:text-2xl font-bold text-gray-900 mb-6">
                       Order Summary
                     </h2>
 
                     {/* Coupon Section */}
                     <div className="mb-6">
-                      <h3 className="font-semibold text-gray-900 mb-3">
+                      <h3 className="font-semibold text-gray-900 mb-3 text-sm md:text-base">
                         Apply Coupon
                       </h3>
                       {appliedCoupon ? (
-                        <div className="flex items-center justify-between p-4 bg-green-50 border border-green-200 rounded-xl">
+                        <div className="flex items-center justify-between p-3 md:p-4 bg-green-50 border border-green-200 rounded-lg">
                           <div className="flex items-center gap-2">
-                            <span className="text-green-600 font-semibold">
+                            <span className="text-green-600 font-semibold text-sm md:text-base">
                               {appliedCoupon.code}
                             </span>
-                            <span className="text-sm text-green-600">
+                            <span className="text-xs md:text-sm text-green-600">
                               (-${discount.toFixed(2)})
                             </span>
                           </div>
                           <button
                             onClick={handleRemoveCoupon}
-                            className="text-sm text-red-500 hover:text-red-600 font-medium"
+                            className="text-xs md:text-sm text-red-500 hover:text-red-600 font-medium"
                           >
                             Remove
                           </button>
@@ -404,13 +404,13 @@ const CartPage = () => {
                               setCouponCode(e.target.value.toUpperCase())
                             }
                             placeholder="Enter coupon code"
-                            className="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
+                            className="flex-1 px-3 py-2 text-sm border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary-500"
                           />
                           <Button
                             variant="outline"
                             onClick={handleApplyCoupon}
                             disabled={couponLoading || !couponCode.trim()}
-                            className="whitespace-nowrap"
+                            className="whitespace-nowrap text-sm px-3"
                           >
                             {couponLoading ? "..." : "Apply"}
                           </Button>
@@ -419,7 +419,7 @@ const CartPage = () => {
                     </div>
 
                     {/* Price Breakdown */}
-                    <div className="space-y-4 mb-6">
+                    <div className="space-y-3 mb-6 text-sm md:text-base">
                       <div className="flex justify-between text-gray-600">
                         <span>Subtotal</span>
                         <span className="font-medium">
@@ -444,12 +444,12 @@ const CartPage = () => {
                           </span>
                         </div>
                       )}
-                      <div className="border-t pt-4">
+                      <div className="border-t pt-3 md:pt-4">
                         <div className="flex justify-between items-baseline">
-                          <span className="text-xl font-semibold text-gray-900">
+                          <span className="text-lg md:text-xl font-semibold text-gray-900">
                             Total
                           </span>
-                          <span className="text-3xl font-bold text-primary-500">
+                          <span className="text-2xl md:text-3xl font-bold text-primary-500">
                             ${calculateTotal().toFixed(2)}
                           </span>
                         </div>
@@ -458,23 +458,23 @@ const CartPage = () => {
 
                     {/* Address Section */}
                     {auth?.user?.address ? (
-                      <div className="mb-6 p-4 bg-gray-50 rounded-xl">
-                        <h3 className="font-semibold text-gray-900 mb-2">
+                      <div className="mb-6 p-3 md:p-4 bg-gray-50 rounded-lg">
+                        <h3 className="font-semibold text-gray-900 mb-2 text-sm md:text-base">
                           Delivery Address
                         </h3>
-                        <p className="text-sm text-gray-600 mb-3">
+                        <p className="text-xs md:text-sm text-gray-600 mb-3">
                           {auth?.user?.address}
                         </p>
                         <button
                           onClick={() => navigate("/dashborad/user/profile")}
-                          className="text-sm text-primary-500 font-medium hover:text-primary-600"
+                          className="text-xs md:text-sm text-primary-500 font-medium hover:text-primary-600"
                         >
                           Change Address
                         </button>
                       </div>
                     ) : (
-                      <div className="mb-6 p-4 bg-yellow-50 border border-yellow-200 rounded-xl">
-                        <p className="text-sm text-yellow-800 mb-3">
+                      <div className="mb-6 p-3 md:p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
+                        <p className="text-xs md:text-sm text-yellow-800 mb-3">
                           Please add a delivery address to continue
                         </p>
                         <Button
@@ -485,6 +485,7 @@ const CartPage = () => {
                               ? navigate("/dashborad/user/profile")
                               : navigate("/login", { state: "/cart" })
                           }
+                          className="text-sm"
                         >
                           {auth?.token ? "Add Address" : "Login to Continue"}
                         </Button>
@@ -494,8 +495,8 @@ const CartPage = () => {
                     {/* Payment Section */}
                     {cart?.length > 0 && razorpayKey && (
                       <div className="space-y-4">
-                        <div className="p-4 bg-blue-50 border border-blue-200 rounded-xl">
-                          <p className="text-sm text-blue-800">
+                        <div className="p-3 md:p-4 bg-blue-50 border border-blue-200 rounded-lg">
+                          <p className="text-xs md:text-sm text-blue-800">
                             <strong>Secure Payment:</strong> Your payment is
                             processed securely through Razorpay
                           </p>
@@ -509,6 +510,7 @@ const CartPage = () => {
                           disabled={loading || !auth?.user?.address}
                           icon={<AiOutlineRight size={20} />}
                           iconPosition="right"
+                          className="text-sm md:text-base"
                         >
                           {loading ? "Processing..." : "Proceed to Payment"}
                         </Button>

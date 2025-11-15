@@ -147,7 +147,7 @@ const couponSlice = createSlice({
       })
       .addCase(applyCoupon.fulfilled, (state, action) => {
         state.loading = false;
-        das; // Backend returns {success: true, data: {...}}
+        // Backend returns {success: true, data: {...}}
         const couponData = action.payload.data || action.payload;
         state.appliedCoupon = {
           code: couponData.couponCode,

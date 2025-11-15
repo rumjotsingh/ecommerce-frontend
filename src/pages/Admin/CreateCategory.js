@@ -136,27 +136,30 @@ const CreateCategory = () => {
 
   return (
     <Layout title={"Dashboard - Create Category"}>
-      <div className="min-h-screen bg-gray-50 py-8">
-        <div className="container mx-auto px-4 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+      <div className="min-h-screen bg-gray-50 py-4 sm:py-6 lg:py-8">
+        <div className="container mx-auto px-3 sm:px-4 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 sm:gap-6">
             {/* Sidebar */}
             <div className="lg:col-span-1">
               <AdminMenu />
             </div>
 
             {/* Main Content */}
-            <div className="lg:col-span-3 space-y-6">
+            <div className="lg:col-span-3 space-y-4 sm:space-y-6">
               {/* Header */}
-              <Card>
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-xl flex items-center justify-center">
-                    <AiOutlineAppstore size={24} className="text-white" />
+              <Card className="p-4 sm:p-6">
+                <div className="flex items-center gap-3 sm:gap-4">
+                  <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0">
+                    <AiOutlineAppstore
+                      size={20}
+                      className="text-white sm:w-6 sm:h-6"
+                    />
                   </div>
-                  <div>
-                    <h1 className="text-2xl font-bold text-gray-900">
+                  <div className="min-w-0">
+                    <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 truncate">
                       Manage Categories
                     </h1>
-                    <p className="text-gray-600">
+                    <p className="text-sm sm:text-base text-gray-600">
                       Create and manage product categories
                     </p>
                   </div>
@@ -164,8 +167,8 @@ const CreateCategory = () => {
               </Card>
 
               {/* Create Category Form */}
-              <Card>
-                <h2 className="text-lg font-semibold text-gray-900 mb-4 pb-2 border-b">
+              <Card className="p-4 sm:p-6">
+                <h2 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4 pb-2 border-b">
                   Create New Category
                 </h2>
                 <CategoryForm
@@ -177,38 +180,50 @@ const CreateCategory = () => {
               </Card>
 
               {/* Categories List */}
-              <Card>
-                <h2 className="text-lg font-semibold text-gray-900 mb-4 pb-2 border-b">
+              <Card className="p-4 sm:p-6">
+                <h2 className="text-base sm:text-lg font-semibold text-gray-900 mb-3 sm:mb-4 pb-2 border-b">
                   All Categories ({categories?.length || 0})
                 </h2>
                 {categories?.length > 0 ? (
-                  <div className="space-y-2">
+                  <div className="space-y-2 sm:space-y-2.5">
                     {categories.map((c) => (
                       <div
                         key={c._id}
-                        className="flex items-center justify-between p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors"
+                        className="flex flex-col xs:flex-row items-start xs:items-center justify-between gap-2 xs:gap-3 p-3 sm:p-4 bg-gray-50 rounded-lg sm:rounded-xl hover:bg-gray-100 transition-colors"
                       >
-                        <span className="font-medium text-gray-900">
+                        <span className="font-medium text-gray-900 text-sm sm:text-base truncate max-w-full xs:max-w-[60%]">
                           {c.name}
                         </span>
-                        <div className="flex gap-2">
+                        <div className="flex gap-1.5 sm:gap-2 w-full xs:w-auto">
                           <Button
                             variant="outline"
                             size="sm"
-                            icon={<AiOutlineEdit size={16} />}
+                            icon={
+                              <AiOutlineEdit
+                                size={14}
+                                className="sm:w-4 sm:h-4"
+                              />
+                            }
                             onClick={() => {
                               setVisible(true);
                               setUpdatedName(c.name);
                               setSelected(c);
                             }}
+                            className="flex-1 xs:flex-initial text-xs sm:text-sm"
                           >
                             Edit
                           </Button>
                           <Button
                             variant="danger"
                             size="sm"
-                            icon={<AiOutlineDelete size={16} />}
+                            icon={
+                              <AiOutlineDelete
+                                size={14}
+                                className="sm:w-4 sm:h-4"
+                              />
+                            }
                             onClick={() => handleDelete(c._id, c.name)}
+                            className="flex-1 xs:flex-initial text-xs sm:text-sm"
                           >
                             Delete
                           </Button>
@@ -217,12 +232,14 @@ const CreateCategory = () => {
                     ))}
                   </div>
                 ) : (
-                  <div className="text-center py-12">
+                  <div className="text-center py-8 sm:py-12">
                     <AiOutlineAppstore
-                      size={48}
-                      className="text-gray-300 mx-auto mb-4"
+                      size={40}
+                      className="text-gray-300 mx-auto mb-3 sm:mb-4 sm:w-12 sm:h-12"
                     />
-                    <p className="text-gray-600">No categories yet</p>
+                    <p className="text-sm sm:text-base text-gray-600">
+                      No categories yet
+                    </p>
                   </div>
                 )}
               </Card>

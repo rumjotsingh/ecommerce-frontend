@@ -165,28 +165,28 @@ const Coupons = () => {
 
   return (
     <Layout title="Manage Coupons">
-      <div className="min-h-screen bg-gray-50 py-8">
-        <div className="container mx-auto px-4 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
+      <div className="min-h-screen bg-gray-50 py-4 sm:py-6 lg:py-8">
+        <div className="container mx-auto px-3 sm:px-4 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 sm:gap-6 lg:gap-8">
             {/* Sidebar */}
             <div className="lg:col-span-1">
               <AdminMenu />
             </div>
 
             {/* Main Content */}
-            <div className="lg:col-span-3 space-y-6">
+            <div className="lg:col-span-3 space-y-4 sm:space-y-6">
               {/* Header */}
-              <Card>
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-4">
-                    <div className="w-12 h-12 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-xl flex items-center justify-center">
-                      <AiOutlineTag size={24} className="text-white" />
+              <Card className="p-4 sm:p-6">
+                <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 sm:gap-4">
+                  <div className="flex items-center gap-3 sm:gap-4 min-w-0">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0">
+                      <AiOutlineTag size={20} className="text-white sm:w-6 sm:h-6" />
                     </div>
-                    <div>
-                      <h1 className="text-2xl font-bold text-gray-900">
+                    <div className="min-w-0">
+                      <h1 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 truncate">
                         Manage Coupons
                       </h1>
-                      <p className="text-gray-600">
+                      <p className="text-sm sm:text-base text-gray-600">
                         {coupons?.length || 0} total coupons
                       </p>
                     </div>
@@ -194,7 +194,8 @@ const Coupons = () => {
                   <Button
                     variant="primary"
                     onClick={() => setShowModal(true)}
-                    icon={<AiOutlinePlus size={20} />}
+                    icon={<AiOutlinePlus size={18} className="sm:w-5 sm:h-5" />}
+                    className="w-full sm:w-auto text-sm sm:text-base whitespace-nowrap"
                   >
                     Create Coupon
                   </Button>
@@ -203,33 +204,33 @@ const Coupons = () => {
 
               {/* Coupons List */}
               {loading ? (
-                <div className="grid gap-4">
+                <div className="grid gap-3 sm:gap-4">
                   {[...Array(3)].map((_, i) => (
-                    <Card key={i}>
-                      <div className="animate-pulse space-y-4">
-                        <div className="h-6 bg-gray-200 rounded w-1/4"></div>
-                        <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                    <Card key={i} className="p-4 sm:p-6">
+                      <div className="animate-pulse space-y-3 sm:space-y-4">
+                        <div className="h-5 sm:h-6 bg-gray-200 rounded w-1/4"></div>
+                        <div className="h-3 sm:h-4 bg-gray-200 rounded w-3/4"></div>
                       </div>
                     </Card>
                   ))}
                 </div>
               ) : coupons?.length > 0 ? (
-                <div className="grid gap-4">
+                <div className="grid gap-3 sm:gap-4">
                   {coupons.map((coupon) => (
-                    <Card key={coupon._id} hover>
-                      <div className="space-y-4">
+                    <Card key={coupon._id} hover className="p-4 sm:p-6">
+                      <div className="space-y-3 sm:space-y-4">
                         {/* Coupon Header */}
-                        <div className="flex items-start justify-between">
-                          <div className="flex items-center gap-4">
-                            <div className="w-16 h-16 bg-gradient-to-br from-primary-100 to-secondary-100 rounded-xl flex items-center justify-center">
+                        <div className="flex items-start justify-between gap-2">
+                          <div className="flex items-center gap-2.5 sm:gap-3 lg:gap-4 min-w-0">
+                            <div className="w-12 h-12 sm:w-14 sm:h-14 lg:w-16 lg:h-16 bg-gradient-to-br from-primary-100 to-secondary-100 rounded-lg sm:rounded-xl flex items-center justify-center flex-shrink-0">
                               <AiOutlineTag
-                                size={32}
-                                className="text-primary-500"
+                                size={24}
+                                className="text-primary-500 sm:w-7 sm:h-7 lg:w-8 lg:h-8"
                               />
                             </div>
-                            <div>
-                              <div className="flex items-center gap-3 mb-1">
-                                <h3 className="text-2xl font-bold text-gray-900 font-mono">
+                            <div className="min-w-0">
+                              <div className="flex items-center gap-2 sm:gap-3 mb-0.5 sm:mb-1 flex-wrap">
+                                <h3 className="text-lg sm:text-xl lg:text-2xl font-bold text-gray-900 font-mono truncate">
                                   {coupon.code}
                                 </h3>
                                 <Badge
@@ -240,80 +241,83 @@ const Coupons = () => {
                                   {coupon.isActive ? "Active" : "Inactive"}
                                 </Badge>
                               </div>
-                              <p className="text-sm text-gray-600">
+                              <p className="text-xs sm:text-sm text-gray-600">
                                 {coupon.discountType === "percentage"
                                   ? `${coupon.discountValue}% off`
                                   : `$${coupon.discountValue} off`}
                               </p>
                             </div>
                           </div>
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-1 sm:gap-1.5 lg:gap-2 flex-shrink-0">
                             <button
                               onClick={() => handleToggle(coupon._id)}
-                              className="p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+                              className="p-1.5 sm:p-2 text-gray-600 hover:bg-gray-100 rounded-md sm:rounded-lg transition-colors"
                               title={
                                 coupon.isActive ? "Deactivate" : "Activate"
                               }
+                              aria-label={coupon.isActive ? "Deactivate" : "Activate"}
                             >
                               {coupon.isActive ? (
-                                <AiOutlineEye size={20} />
+                                <AiOutlineEye size={18} className="sm:w-5 sm:h-5" />
                               ) : (
-                                <AiOutlineEyeInvisible size={20} />
+                                <AiOutlineEyeInvisible size={18} className="sm:w-5 sm:h-5" />
                               )}
                             </button>
                             <button
                               onClick={() => handleEdit(coupon)}
-                              className="p-2 text-blue-600 hover:bg-blue-50 rounded-lg transition-colors"
+                              className="p-1.5 sm:p-2 text-blue-600 hover:bg-blue-50 rounded-md sm:rounded-lg transition-colors"
+                              aria-label="Edit"
                             >
-                              <AiOutlineEdit size={20} />
+                              <AiOutlineEdit size={18} className="sm:w-5 sm:h-5" />
                             </button>
                             <button
                               onClick={() =>
                                 handleDelete(coupon._id, coupon.code)
                               }
-                              className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
+                              className="p-1.5 sm:p-2 text-red-600 hover:bg-red-50 rounded-md sm:rounded-lg transition-colors"
+                              aria-label="Delete"
                             >
-                              <AiOutlineDelete size={20} />
+                              <AiOutlineDelete size={18} className="sm:w-5 sm:h-5" />
                             </button>
                           </div>
                         </div>
 
                         {/* Coupon Details */}
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 pt-4 border-t">
+                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 pt-3 sm:pt-4 border-t">
                           <div>
-                            <p className="text-xs text-gray-500">
+                            <p className="text-[10px] sm:text-xs text-gray-500">
                               Discount Type
                             </p>
-                            <p className="font-semibold text-gray-900 capitalize">
+                            <p className="font-semibold text-gray-900 capitalize text-xs sm:text-sm truncate">
                               {coupon.discountType}
                             </p>
                           </div>
                           {coupon.minPurchase && (
                             <div>
-                              <p className="text-xs text-gray-500">
+                              <p className="text-[10px] sm:text-xs text-gray-500">
                                 Min Purchase
                               </p>
-                              <p className="font-semibold text-gray-900">
+                              <p className="font-semibold text-gray-900 text-xs sm:text-sm">
                                 ${coupon.minPurchase}
                               </p>
                             </div>
                           )}
                           {coupon.maxDiscount && (
                             <div>
-                              <p className="text-xs text-gray-500">
+                              <p className="text-[10px] sm:text-xs text-gray-500">
                                 Max Discount
                               </p>
-                              <p className="font-semibold text-gray-900">
+                              <p className="font-semibold text-gray-900 text-xs sm:text-sm">
                                 ${coupon.maxDiscount}
                               </p>
                             </div>
                           )}
                           {coupon.expiryDate && (
                             <div>
-                              <p className="text-xs text-gray-500">
+                              <p className="text-[10px] sm:text-xs text-gray-500">
                                 Expiry Date
                               </p>
-                              <p className="font-semibold text-gray-900">
+                              <p className="font-semibold text-gray-900 text-xs sm:text-sm">
                                 {moment(coupon.expiryDate).format(
                                   "MMM DD, YYYY"
                                 )}
@@ -322,10 +326,10 @@ const Coupons = () => {
                           )}
                           {coupon.usageLimit && (
                             <div>
-                              <p className="text-xs text-gray-500">
+                              <p className="text-[10px] sm:text-xs text-gray-500">
                                 Usage Limit
                               </p>
-                              <p className="font-semibold text-gray-900">
+                              <p className="font-semibold text-gray-900 text-xs sm:text-sm">
                                 {coupon.usedCount || 0} / {coupon.usageLimit}
                               </p>
                             </div>
@@ -336,21 +340,22 @@ const Coupons = () => {
                   ))}
                 </div>
               ) : (
-                <Card>
-                  <div className="text-center py-12">
-                    <div className="inline-flex items-center justify-center w-16 h-16 bg-gray-100 rounded-full mb-4">
-                      <AiOutlineTag size={32} className="text-gray-400" />
+                <Card className="p-6 sm:p-8">
+                  <div className="text-center py-8 sm:py-12">
+                    <div className="inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 bg-gray-100 rounded-full mb-3 sm:mb-4">
+                      <AiOutlineTag size={28} className="text-gray-400 sm:w-8 sm:h-8" />
                     </div>
-                    <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                    <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-1.5 sm:mb-2">
                       No Coupons Yet
                     </h3>
-                    <p className="text-gray-600 mb-4">
+                    <p className="text-sm sm:text-base text-gray-600 mb-3 sm:mb-4 px-4">
                       Create your first coupon to start offering discounts
                     </p>
                     <Button
                       variant="primary"
                       onClick={() => setShowModal(true)}
-                      icon={<AiOutlinePlus size={20} />}
+                      icon={<AiOutlinePlus size={18} className="sm:w-5 sm:h-5" />}
+                      className="text-sm sm:text-base"
                     >
                       Create Coupon
                     </Button>
