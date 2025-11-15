@@ -396,7 +396,7 @@ const CartPage = () => {
                           </button>
                         </div>
                       ) : (
-                        <div className="flex gap-2">
+                        <div className="flex flex-col mf:flex-row gap-2">
                           <input
                             type="text"
                             value={couponCode}
@@ -412,7 +412,7 @@ const CartPage = () => {
                             disabled={couponLoading || !couponCode.trim()}
                             className="whitespace-nowrap text-sm px-3"
                           >
-                            {couponLoading ? "..." : "Apply"}
+                            {couponLoading ? "Applying..." : "Apply"}
                           </Button>
                         </div>
                       )}
