@@ -3,11 +3,13 @@ import Layout from "./../../components/layout/layout";
 import AdminMenu from "./../../components/layout/AdminMenu";
 import toast from "react-hot-toast";
 import axios from "axios";
+import { API_ENDPOINTS } from "../../config/api";
 import { Select } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
 import Card from "../../components/UI/Card";
 import Input from "../../components/UI/Input";
 import Button from "../../components/UI/Button";
+import Modal from "../../components/UI/Modal";
 import {
   AiOutlineSave,
   AiOutlineDelete,
@@ -29,12 +31,13 @@ const UpdateProduct = () => {
   const [photo, setPhoto] = useState("");
   const [id, setId] = useState("");
   const [loading, setLoading] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
 
   //get single product
   const getSingleProduct = async () => {
     try {
       const { data } = await axios.get(
-        `https://ecommerce-backend-s84l.onrender.com/api/v1/product/get-product/${params.slug}`
+        API_ENDPOINTS.PRODUCT.GET_SINGLE(params.slug)
       );
       setName(data.product.name);
       setId(data.product._id);
@@ -55,9 +58,7 @@ const UpdateProduct = () => {
   //get all category
   const getAllCategory = async () => {
     try {
-      const { data } = await axios.get(
-        "https://ecommerce-backend-s84l.onrender.com/api/v1/category/get-category"
-      );
+      const { data } = await axios.get(API_ENDPOINTS.CATEGORY.GET_ALL);
       if (data?.success) {
         setCategories(data?.category);
       }
@@ -84,7 +85,7 @@ const UpdateProduct = () => {
       photo && productData.append("photo", photo);
       productData.append("category", category);
       const { data } = await axios.put(
-        `https://ecommerce-backend-s84l.onrender.com/api/v1/product/update-product/${id}`,
+        API_ENDPOINTS.PRODUCT.UPDATE(id),
         productData
       );
 
@@ -107,17 +108,13 @@ const UpdateProduct = () => {
   };
 
   //delete a product
-  const handleDelete = async () => {
+  const handleDelete = () => {
+    setShowDeleteModal(true);
+  };
+
+  const confirmDelete = async () => {
     try {
-      const confirmed = window.confirm(
-        "Are you sure you want to delete this product? This action cannot be undone."
-      );
-      if (!confirmed) {
-        return;
-      }
-      const { data } = await axios.delete(
-        `https://ecommerce-backend-s84l.onrender.com/api/v1/product/delete-product/${id}`
-      );
+      await axios.delete(API_ENDPOINTS.PRODUCT.DELETE(id));
       toast.success("Product Deleted Successfully", {
         duration: 2000,
         style: {
@@ -130,6 +127,10 @@ const UpdateProduct = () => {
       console.log(error);
       toast.error("Something went wrong");
     }
+  };
+
+  const cancelDelete = () => {
+    setShowDeleteModal(false);
   };
   return (
     <Layout title={"Dashboard - Update Product"}>
@@ -197,7 +198,7 @@ const UpdateProduct = () => {
                         />
                       ) : id ? (
                         <img
-                          src={`https://ecommerce-backend-s84l.onrender.com/api/v1/product/product-photo/${id}`}
+                          src={API_ENDPOINTS.PRODUCT.GET_PHOTO(id)}
                           alt="product_photo"
                           className="h-full w-full object-contain rounded-xl"
                         />
@@ -318,6 +319,53 @@ const UpdateProduct = () => {
           </div>
         </div>
       </div>
+
+      {/* Delete Confirmation Modal */}
+      <Modal
+        isOpen={showDeleteModal}
+        onClose={cancelDelete}
+        title="Delete Product"
+      >
+        <div className="space-y-6">
+          <div className="flex justify-center">
+            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center">
+              <AiOutlineDelete size={32} className="text-red-600" />
+            </div>
+          </div>
+          <div className="text-center space-y-2">
+            <h3 className="text-lg font-semibold text-gray-900">
+              Are you sure you want to delete this product?
+            </h3>
+            {name && (
+              <p className="text-gray-600">
+                Product: <span className="font-bold text-gray-900">{name}</span>
+              </p>
+            )}
+            <p className="text-sm text-red-600">
+              This action cannot be undone. The product will be permanently
+              removed from your store.
+            </p>
+          </div>
+          <div className="flex gap-3">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={cancelDelete}
+              fullWidth
+            >
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              variant="danger"
+              onClick={confirmDelete}
+              fullWidth
+            >
+              Delete Product
+            </Button>
+          </div>
+        </div>
+      </Modal>
     </Layout>
   );
 };

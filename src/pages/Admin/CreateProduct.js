@@ -3,6 +3,7 @@ import Layout from "./../../components/layout/layout";
 import AdminMenu from "./../../components/layout/AdminMenu";
 import toast from "react-hot-toast";
 import axios from "axios";
+import { API_ENDPOINTS } from "../../config/api";
 import { Select } from "antd";
 import { useNavigate } from "react-router-dom";
 import Card from "../../components/UI/Card";
@@ -26,9 +27,7 @@ const CreateProduct = () => {
   //get all category
   const getAllCategory = async () => {
     try {
-      const { data } = await axios.get(
-        "https://ecommerce-backend-s84l.onrender.com/api/v1/category/get-category"
-      );
+      const { data } = await axios.get(API_ENDPOINTS.CATEGORY.GET_ALL);
       if (data?.success) {
         setCategories(data?.category);
       }
@@ -53,10 +52,7 @@ const CreateProduct = () => {
       productData.append("quantity", quantity);
       productData.append("photo", photo);
       productData.append("category", category);
-      const { data } = axios.post(
-        "https://ecommerce-backend-s84l.onrender.com/api/v1/product/create-product",
-        productData
-      );
+      const { data } = axios.post(API_ENDPOINTS.PRODUCT.CREATE, productData);
       if (data?.success) {
         toast.error(data?.message);
       } else {

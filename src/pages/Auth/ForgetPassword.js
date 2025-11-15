@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Layout from "./../../components/layout/layout";
 import axios from "axios";
 import { useNavigate, Link } from "react-router-dom";
+import { API_ENDPOINTS } from "../../config/api";
 import toast from "react-hot-toast";
 import {
   AiOutlineMail,
@@ -25,14 +26,11 @@ const ForgotPasssword = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await axios.post(
-        "https://ecommerce-backend-s84l.onrender.com/api/v1/auth/forget-password",
-        {
-          email,
-          newPassword,
-          answer,
-        }
-      );
+      const res = await axios.post(API_ENDPOINTS.AUTH.FORGOT_PASSWORD, {
+        email,
+        newPassword,
+        answer,
+      });
       if (res && res.data.success) {
         toast.success(res.data && res.data.message, {
           duration: 2000,

@@ -1,14 +1,36 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { AiOutlineShoppingCart, AiOutlineHeart } from "react-icons/ai";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  AiOutlineShoppingCart,
+  AiOutlineHeart,
+  AiFillHeart,
+} from "react-icons/ai";
 import { useCart } from "../../context/cart";
+import { useAuth } from "../../context/auth";
+import { API_ENDPOINTS } from "../../config/api";
 import toast from "react-hot-toast";
 import Rating from "../UI/Rating";
 import Button from "../UI/Button";
+import {
+  addToWishlist,
+  removeFromWishlist,
+  fetchWishlist,
+} from "../../redux/slices/wishlistSlice";
 
 const ProductCard = ({ product }) => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [auth] = useAuth();
   const [cart, setCart] = useCart();
+  const { items } = useSelector((state) => state.wishlist);
+  const [isInWishlist, setIsInWishlist] = useState(false);
+
+  useEffect(() => {
+    // Check if product is in wishlist
+    const inWishlist = items?.some((item) => item._id === product._id);
+    setIsInWishlist(inWishlist);
+  }, [items, product._id]);
 
   const handleAddToCart = (e) => {
     e.stopPropagation();
@@ -23,6 +45,33 @@ const ProductCard = ({ product }) => {
     });
   };
 
+  const handleWishlistToggle = async (e) => {
+    e.stopPropagation();
+
+    if (!auth?.token) {
+      toast.error("Please login to add to wishlist");
+      navigate("/login");
+      return;
+    }
+
+    try {
+      if (isInWishlist) {
+        await dispatch(removeFromWishlist(product._id)).unwrap();
+        toast.success("Removed from wishlist", { duration: 2000 });
+        // Fetch updated wishlist and count
+        await dispatch(fetchWishlist()).unwrap();
+      } else {
+        await dispatch(addToWishlist(product._id)).unwrap();
+        toast.success("Added to wishlist", { duration: 2000 });
+        // Fetch updated wishlist and count
+        await dispatch(fetchWishlist()).unwrap();
+      }
+    } catch (err) {
+      toast.error(err || "Something went wrong");
+      console.error("Wishlist error:", err);
+    }
+  };
+
   return (
     <div
       className="group bg-white rounded-2xl shadow-soft hover:shadow-soft-lg transition-all duration-300 overflow-hidden cursor-pointer"
@@ -31,7 +80,7 @@ const ProductCard = ({ product }) => {
       {/* Image Container */}
       <div className="relative overflow-hidden bg-gray-100 aspect-square">
         <img
-          src={`https://ecommerce-backend-s84l.onrender.com/api/v1/product/product-photo/${product._id}`}
+          src={API_ENDPOINTS.PRODUCT.GET_PHOTO(product._id)}
           alt={product.name}
           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
         />
@@ -40,13 +89,19 @@ const ProductCard = ({ product }) => {
         <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300">
           <div className="absolute top-4 right-4 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-all duration-300">
             <button
-              className="p-2 bg-white rounded-full shadow-lg hover:bg-red-50 transition-colors"
-              onClick={(e) => e.stopPropagation()}
+              className={`p-2 bg-white rounded-full shadow-lg transition-colors ${
+                isInWishlist ? "bg-red-50" : "hover:bg-red-50"
+              }`}
+              onClick={handleWishlistToggle}
             >
-              <AiOutlineHeart
-                size={20}
-                className="text-gray-700 hover:text-red-500"
-              />
+              {isInWishlist ? (
+                <AiFillHeart size={20} className="text-red-500" />
+              ) : (
+                <AiOutlineHeart
+                  size={20}
+                  className="text-gray-700 hover:text-red-500"
+                />
+              )}
             </button>
           </div>
         </div>

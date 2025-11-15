@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import UserMenu from "../../components/layout/UserMenu";
 import Layout from "./../../components/layout/layout";
 import { useAuth } from "../../context/auth";
+import { API_ENDPOINTS } from "../../config/api";
 import toast from "react-hot-toast";
 import axios from "axios";
 import Card from "../../components/UI/Card";
@@ -37,16 +38,13 @@ const Profile = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const { data } = await axios.put(
-        "https://ecommerce-backend-s84l.onrender.com/api/v1/auth/profile",
-        {
-          name,
-          email,
-          password,
-          phone,
-          address,
-        }
-      );
+      const { data } = await axios.put(API_ENDPOINTS.AUTH.UPDATE_PROFILE, {
+        name,
+        email,
+        password,
+        phone,
+        address,
+      });
       if (data?.error) {
         toast.error(data?.error);
       } else {

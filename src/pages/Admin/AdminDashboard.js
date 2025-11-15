@@ -1,6 +1,11 @@
-import React from "react";
+import React, { useEffect } from "react";
 import Layout from "./../../components/layout/layout";
 import { useAuth } from "../../context/auth";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  fetchOverview,
+  fetchTopProducts,
+} from "../../redux/slices/analyticsSlice";
 import AdminMenu from "../../components/layout/AdminMenu";
 import {
   AiOutlineShoppingCart,
@@ -13,12 +18,26 @@ import Card from "../../components/UI/Card";
 
 const AdminDashboard = () => {
   const [auth] = useAuth();
+  const dispatch = useDispatch();
+  const { overview, topProducts, loading } = useSelector(
+    (state) => state.analytics
+  );
 
-  // Mock data - In real app, fetch from API
+  // Fetch analytics data on mount
+  useEffect(() => {
+    if (auth?.token) {
+      dispatch(fetchOverview());
+      dispatch(fetchTopProducts());
+    }
+  }, [auth?.token, dispatch]);
+
+  // Stats data from API
   const stats = [
     {
       title: "Total Revenue",
-      value: "$45,231",
+      value: loading
+        ? "..."
+        : `$${parseFloat(overview?.totalRevenue || 0).toFixed(2)}`,
       change: "+12.5%",
       icon: <AiOutlineDollar size={32} />,
       bgColor: "bg-green-100",
@@ -26,7 +45,7 @@ const AdminDashboard = () => {
     },
     {
       title: "Total Orders",
-      value: "1,234",
+      value: loading ? "..." : (overview?.totalOrders || 0).toString(),
       change: "+8.2%",
       icon: <AiOutlineShoppingCart size={32} />,
       bgColor: "bg-blue-100",
@@ -34,15 +53,15 @@ const AdminDashboard = () => {
     },
     {
       title: "Total Products",
-      value: "567",
+      value: loading ? "..." : (overview?.totalProducts || 0).toString(),
       change: "+2.4%",
       icon: <BiPackage size={32} />,
       bgColor: "bg-purple-100",
       textColor: "text-purple-600",
     },
     {
-      title: "Total Users",
-      value: "8,921",
+      title: "Pending Orders",
+      value: loading ? "..." : (overview?.pendingOrders || 0).toString(),
       change: "+18.7%",
       icon: <AiOutlineUser size={32} />,
       bgColor: "bg-orange-100",
@@ -50,6 +69,7 @@ const AdminDashboard = () => {
     },
   ];
 
+  // Recent orders - would need separate API endpoint
   const recentOrders = [
     {
       id: "#12345",
@@ -79,13 +99,6 @@ const AdminDashboard = () => {
       status: "Completed",
       date: "2 days ago",
     },
-  ];
-
-  const topProducts = [
-    { name: "Wireless Headphones", sales: 245, revenue: "$12,250" },
-    { name: "Smart Watch", sales: 189, revenue: "$9,450" },
-    { name: "Laptop Stand", sales: 156, revenue: "$4,680" },
-    { name: "USB-C Cable", sales: 432, revenue: "$2,160" },
   ];
 
   return (
@@ -208,29 +221,39 @@ const AdminDashboard = () => {
                       </button>
                     </div>
                     <div className="space-y-4">
-                      {topProducts.map((product, index) => (
-                        <div
-                          key={index}
-                          className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors"
-                        >
-                          <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-lg flex items-center justify-center text-white font-bold">
-                            {index + 1}
-                          </div>
-                          <div className="flex-1">
-                            <p className="font-semibold text-gray-900">
-                              {product.name}
-                            </p>
-                            <p className="text-sm text-gray-600">
-                              {product.sales} sales
-                            </p>
-                          </div>
-                          <div className="text-right">
-                            <p className="font-bold text-primary-500">
-                              {product.revenue}
-                            </p>
-                          </div>
+                      {loading ? (
+                        <div className="text-center py-8 text-gray-500">
+                          Loading top products...
                         </div>
-                      ))}
+                      ) : topProducts?.length > 0 ? (
+                        topProducts.map((product, index) => (
+                          <div
+                            key={index}
+                            className="flex items-center gap-4 p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors"
+                          >
+                            <div className="flex-shrink-0 w-10 h-10 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-lg flex items-center justify-center text-white font-bold">
+                              {index + 1}
+                            </div>
+                            <div className="flex-1">
+                              <p className="font-semibold text-gray-900">
+                                {product.name}
+                              </p>
+                              <p className="text-sm text-gray-600">
+                                {product.totalSold || 0} sales
+                              </p>
+                            </div>
+                            <div className="text-right">
+                              <p className="font-bold text-primary-500">
+                                ${parseFloat(product.revenue || 0).toFixed(2)}
+                              </p>
+                            </div>
+                          </div>
+                        ))
+                      ) : (
+                        <div className="text-center py-8 text-gray-500">
+                          No top products data available
+                        </div>
+                      )}
                     </div>
                   </div>
                 </Card>

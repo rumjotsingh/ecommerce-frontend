@@ -2,12 +2,18 @@ import React, { useState, useEffect } from "react";
 import Layout from "./../components/layout/layout";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { useCart } from "../context/cart";
+import { useAuth } from "../context/auth";
+import { API_ENDPOINTS } from "../config/api";
 import toast from "react-hot-toast";
 import {
   AiOutlineShoppingCart,
   AiOutlineHeart,
+  AiFillHeart,
   AiOutlineShareAlt,
+  AiFillStar,
+  AiOutlineStar,
 } from "react-icons/ai";
 import { BiPackage, BiShield } from "react-icons/bi";
 import { FaShippingFast } from "react-icons/fa";
@@ -15,26 +21,60 @@ import Rating from "../components/UI/Rating";
 import Button from "../components/UI/Button";
 import Badge from "../components/UI/Badge";
 import ProductCard from "../components/Product/ProductCard";
+import {
+  addToWishlist,
+  removeFromWishlist,
+  fetchWishlist,
+} from "../redux/slices/wishlistSlice";
+import {
+  addReview,
+  fetchProductReviews,
+  deleteReview,
+} from "../redux/slices/reviewSlice";
 
 const ProductDetails = () => {
   const params = useParams();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [auth] = useAuth();
   const [cart, setCart] = useCart();
+  const { items: wishlistItems } = useSelector((state) => state.wishlist);
+  const { reviews, loading: reviewsLoading } = useSelector(
+    (state) => state.review
+  );
   const [product, setProduct] = useState({});
   const [relatedProducts, setRelatedProducts] = useState([]);
   const [selectedImage, setSelectedImage] = useState(0);
   const [quantity, setQuantity] = useState(1);
+  const [isInWishlist, setIsInWishlist] = useState(false);
+  const [showReviewForm, setShowReviewForm] = useState(false);
+  const [reviewRating, setReviewRating] = useState(5);
+  const [reviewComment, setReviewComment] = useState("");
+  const [submittingReview, setSubmittingReview] = useState(false);
 
   //initial details
   useEffect(() => {
     if (params?.slug) getProduct();
   }, [params?.slug]);
 
+  useEffect(() => {
+    // Check if product is in wishlist
+    const inWishlist = wishlistItems?.some((item) => item._id === product._id);
+    setIsInWishlist(inWishlist);
+  }, [wishlistItems, product._id]);
+
+  useEffect(() => {
+    // Fetch reviews when product changes
+    if (product._id) {
+      dispatch(fetchProductReviews(product._id));
+    }
+  }, [product._id, dispatch]);
+
   //getProduct
   const getProduct = async () => {
     try {
       const { data } = await axios.get(
-        `https://ecommerce-backend-s84l.onrender.com/api/v1/product/get-product/${params.slug}`
+        API_ENDPOINTS.PRODUCT.GET_SINGLE(params.slug)
       );
       setProduct(data?.product);
       getSimilarProduct(data?.product._id, data?.product.category._id);
@@ -46,9 +86,7 @@ const ProductDetails = () => {
   //get similar product
   const getSimilarProduct = async (pid, cid) => {
     try {
-      const { data } = await axios.get(
-        `https://ecommerce-backend-s84l.onrender.com/api/v1/product/related-product/${pid}/${cid}`
-      );
+      const { data } = await axios.get(API_ENDPOINTS.PRODUCT.RELATED(pid, cid));
       setRelatedProducts(data?.products);
     } catch (error) {
       console.log(error);
@@ -88,10 +126,80 @@ const ProductDetails = () => {
     });
   };
 
+  const handleWishlistToggle = async () => {
+    if (!auth?.token) {
+      toast.error("Please login to add to wishlist");
+      navigate("/login");
+      return;
+    }
+
+    try {
+      if (isInWishlist) {
+        await dispatch(removeFromWishlist(product._id)).unwrap();
+        toast.success("Removed from wishlist", { duration: 2000 });
+        // Fetch updated wishlist
+        await dispatch(fetchWishlist()).unwrap();
+      } else {
+        await dispatch(addToWishlist(product._id)).unwrap();
+        toast.success("Added to wishlist", { duration: 2000 });
+        // Fetch updated wishlist
+        await dispatch(fetchWishlist()).unwrap();
+      }
+    } catch (err) {
+      toast.error(err || "Something went wrong");
+      console.error("Wishlist error:", err);
+    }
+  };
+
+  const handleSubmitReview = async (e) => {
+    e.preventDefault();
+
+    if (!auth?.token) {
+      toast.error("Please login to write a review");
+      navigate("/login");
+      return;
+    }
+
+    if (!reviewComment.trim()) {
+      toast.error("Please write a comment");
+      return;
+    }
+
+    setSubmittingReview(true);
+    try {
+      await dispatch(
+        addReview({
+          productId: product._id,
+          reviewData: {
+            rating: reviewRating,
+            comment: reviewComment,
+          },
+        })
+      ).unwrap();
+      toast.success("Review added successfully");
+      setReviewComment("");
+      setReviewRating(5);
+      setShowReviewForm(false);
+      dispatch(fetchProductReviews(product._id));
+    } catch (err) {
+      toast.error(err.message || "Failed to add review");
+    } finally {
+      setSubmittingReview(false);
+    }
+  };
+
+  const handleDeleteReview = async (reviewId) => {
+    try {
+      await dispatch(deleteReview(reviewId)).unwrap();
+      toast.success("Review deleted");
+      dispatch(fetchProductReviews(product._id));
+    } catch (err) {
+      toast.error(err.message || "Failed to delete review");
+    }
+  };
+
   // Mock images array - In real scenario, you'd have multiple product images
-  const productImages = [
-    `https://ecommerce-backend-s84l.onrender.com/api/v1/product/product-photo/${product._id}`,
-  ];
+  const productImages = [API_ENDPOINTS.PRODUCT.GET_PHOTO(product._id)];
 
   return (
     <Layout title={`${product?.name} - Product Details`}>
@@ -241,8 +349,16 @@ const ProductDetails = () => {
                   >
                     Add to Cart
                   </Button>
-                  <Button variant="outline" size="lg">
-                    <AiOutlineHeart size={24} />
+                  <Button
+                    variant="outline"
+                    size="lg"
+                    onClick={handleWishlistToggle}
+                  >
+                    {isInWishlist ? (
+                      <AiFillHeart size={24} className="text-red-500" />
+                    ) : (
+                      <AiOutlineHeart size={24} />
+                    )}
                   </Button>
                   <Button variant="outline" size="lg">
                     <AiOutlineShareAlt size={24} />
@@ -292,6 +408,151 @@ const ProductDetails = () => {
                   </div>
                 </div>
               </div>
+            </div>
+          </div>
+
+          {/* Reviews Section */}
+          <div className="bg-white rounded-3xl shadow-soft-lg p-8 mb-12">
+            <div className="flex items-center justify-between mb-8">
+              <h2 className="text-3xl font-bold text-gray-900">
+                Customer Reviews
+              </h2>
+              <Button
+                variant="primary"
+                onClick={() => setShowReviewForm(!showReviewForm)}
+              >
+                Write a Review
+              </Button>
+            </div>
+
+            {/* Review Form */}
+            {showReviewForm && (
+              <form
+                onSubmit={handleSubmitReview}
+                className="mb-8 p-6 bg-gray-50 rounded-2xl"
+              >
+                <h3 className="text-xl font-semibold text-gray-900 mb-4">
+                  Write Your Review
+                </h3>
+
+                {/* Star Rating */}
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Rating
+                  </label>
+                  <div className="flex gap-2">
+                    {[1, 2, 3, 4, 5].map((star) => (
+                      <button
+                        key={star}
+                        type="button"
+                        onClick={() => setReviewRating(star)}
+                        className="text-3xl focus:outline-none transition-colors"
+                      >
+                        {star <= reviewRating ? (
+                          <AiFillStar className="text-yellow-400" />
+                        ) : (
+                          <AiOutlineStar className="text-gray-300" />
+                        )}
+                      </button>
+                    ))}
+                    <span className="ml-3 text-lg text-gray-600">
+                      {reviewRating} {reviewRating === 1 ? "star" : "stars"}
+                    </span>
+                  </div>
+                </div>
+
+                {/* Comment */}
+                <div className="mb-4">
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Your Review
+                  </label>
+                  <textarea
+                    value={reviewComment}
+                    onChange={(e) => setReviewComment(e.target.value)}
+                    rows="4"
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-primary-500"
+                    placeholder="Share your thoughts about this product..."
+                    required
+                  ></textarea>
+                </div>
+
+                {/* Action Buttons */}
+                <div className="flex gap-3">
+                  <Button
+                    type="submit"
+                    variant="primary"
+                    disabled={submittingReview}
+                  >
+                    {submittingReview ? "Submitting..." : "Submit Review"}
+                  </Button>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => {
+                      setShowReviewForm(false);
+                      setReviewComment("");
+                      setReviewRating(5);
+                    }}
+                  >
+                    Cancel
+                  </Button>
+                </div>
+              </form>
+            )}
+
+            {/* Reviews List */}
+            <div className="space-y-6">
+              {reviewsLoading ? (
+                <div className="text-center py-8">
+                  <p className="text-gray-600">Loading reviews...</p>
+                </div>
+              ) : reviews?.length === 0 ? (
+                <div className="text-center py-8">
+                  <p className="text-gray-600">
+                    No reviews yet. Be the first to review!
+                  </p>
+                </div>
+              ) : (
+                reviews?.map((review) => (
+                  <div
+                    key={review._id}
+                    className="border-b border-gray-200 last:border-0 pb-6 last:pb-0"
+                  >
+                    <div className="flex items-start justify-between mb-3">
+                      <div>
+                        <div className="flex items-center gap-3 mb-2">
+                          <h4 className="font-semibold text-gray-900">
+                            {review.user?.name || "Anonymous"}
+                          </h4>
+                          <Rating rating={review.rating} size="sm" />
+                        </div>
+                        <p className="text-sm text-gray-500">
+                          {new Date(review.createdAt).toLocaleDateString(
+                            "en-US",
+                            {
+                              year: "numeric",
+                              month: "long",
+                              day: "numeric",
+                            }
+                          )}
+                        </p>
+                      </div>
+                      {auth?.user?._id === review.user?._id && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleDeleteReview(review._id)}
+                        >
+                          Delete
+                        </Button>
+                      )}
+                    </div>
+                    <p className="text-gray-700 leading-relaxed">
+                      {review.comment}
+                    </p>
+                  </div>
+                ))
+              )}
             </div>
           </div>
 

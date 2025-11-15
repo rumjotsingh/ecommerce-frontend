@@ -3,6 +3,7 @@ import Layout from "./../../components/layout/layout";
 import AdminMenu from "./../../components/layout/AdminMenu";
 import toast from "react-hot-toast";
 import axios from "axios";
+import { API_ENDPOINTS } from "../../config/api";
 import { Modal } from "antd";
 import CategoryForm from "../../components/Form/CategoryForm";
 import Card from "../../components/UI/Card";
@@ -18,6 +19,8 @@ const CreateCategory = () => {
   const [categories, setCategories] = useState([]);
   const [name, setName] = useState("");
   const [visible, setVisible] = useState(false);
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [deletingCategory, setDeletingCategory] = useState(null);
   const [selected, setSelected] = useState(null);
   const [updatedName, setUpdatedName] = useState("");
   const [loading, setLoading] = useState(false);
@@ -27,10 +30,9 @@ const CreateCategory = () => {
     e.preventDefault();
     try {
       setLoading(true);
-      const { data } = await axios.post(
-        "https://ecommerce-backend-s84l.onrender.com/api/v1/category/create-category",
-        { name }
-      );
+      const { data } = await axios.post(API_ENDPOINTS.CATEGORY.CREATE, {
+        name,
+      });
       if (data?.success) {
         toast.success(`${name} is created`, {
           duration: 2000,
@@ -55,9 +57,7 @@ const CreateCategory = () => {
   // Get all categories
   const getAllCategory = async () => {
     try {
-      const { data } = await axios.get(
-        "https://ecommerce-backend-s84l.onrender.com/api/v1/category/get-category"
-      );
+      const { data } = await axios.get(API_ENDPOINTS.CATEGORY.GET_ALL);
       if (data.success) {
         setCategories(data.category);
       }
@@ -76,7 +76,7 @@ const CreateCategory = () => {
     e.preventDefault();
     try {
       const { data } = await axios.put(
-        `https://ecommerce-backend-s84l.onrender.com/api/v1/category/update-category/${selected._id}`,
+        API_ENDPOINTS.CATEGORY.UPDATE(selected._id),
         { name: updatedName }
       );
       if (data.success) {
@@ -100,10 +100,15 @@ const CreateCategory = () => {
   };
 
   // Delete category
-  const handleDelete = async (pId) => {
+  const handleDelete = (categoryId, categoryName) => {
+    setDeletingCategory({ id: categoryId, name: categoryName });
+    setShowDeleteModal(true);
+  };
+
+  const confirmDelete = async () => {
     try {
       const { data } = await axios.delete(
-        `https://ecommerce-backend-s84l.onrender.com/api/v1/category/delete-category/${pId}`
+        API_ENDPOINTS.CATEGORY.DELETE(deletingCategory.id)
       );
       if (data.success) {
         toast.success("Category is deleted", {
@@ -114,12 +119,19 @@ const CreateCategory = () => {
           },
         });
         getAllCategory();
+        setShowDeleteModal(false);
+        setDeletingCategory(null);
       } else {
         toast.error(data.message);
       }
     } catch (error) {
       toast.error("Something went wrong");
     }
+  };
+
+  const cancelDelete = () => {
+    setShowDeleteModal(false);
+    setDeletingCategory(null);
   };
 
   return (
@@ -196,15 +208,7 @@ const CreateCategory = () => {
                             variant="danger"
                             size="sm"
                             icon={<AiOutlineDelete size={16} />}
-                            onClick={() => {
-                              if (
-                                window.confirm(
-                                  `Are you sure you want to delete "${c.name}"?`
-                                )
-                              ) {
-                                handleDelete(c._id);
-                              }
-                            }}
+                            onClick={() => handleDelete(c._id, c.name)}
                           >
                             Delete
                           </Button>
@@ -239,6 +243,57 @@ const CreateCategory = () => {
           setValue={setUpdatedName}
           handleSubmit={handleUpdate}
         />
+      </Modal>
+
+      {/* Delete Confirmation Modal */}
+      <Modal
+        title="Delete Category"
+        open={showDeleteModal}
+        onCancel={cancelDelete}
+        footer={null}
+      >
+        <div className="space-y-6">
+          <div className="flex justify-center">
+            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center">
+              <AiOutlineDelete size={32} className="text-red-600" />
+            </div>
+          </div>
+          <div className="text-center space-y-2">
+            <h3 className="text-lg font-semibold text-gray-900">
+              Are you sure you want to delete this category?
+            </h3>
+            {deletingCategory && (
+              <p className="text-gray-600">
+                Category:{" "}
+                <span className="font-bold text-gray-900">
+                  {deletingCategory.name}
+                </span>
+              </p>
+            )}
+            <p className="text-sm text-red-600">
+              This action cannot be undone. All products in this category may be
+              affected.
+            </p>
+          </div>
+          <div className="flex gap-3">
+            <Button
+              type="button"
+              variant="outline"
+              onClick={cancelDelete}
+              fullWidth
+            >
+              Cancel
+            </Button>
+            <Button
+              type="button"
+              variant="danger"
+              onClick={confirmDelete}
+              fullWidth
+            >
+              Delete Category
+            </Button>
+          </div>
+        </div>
       </Modal>
     </Layout>
   );

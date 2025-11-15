@@ -3,6 +3,7 @@ import Layout from "./../components/layout/layout";
 import { useSearch } from "../context/search";
 import { useNavigate } from "react-router-dom";
 import { useCart } from "../context/cart";
+import { API_ENDPOINTS } from "../config/api";
 import toast from "react-hot-toast";
 import Card from "../components/UI/Card";
 import Button from "../components/UI/Button";
@@ -49,7 +50,7 @@ const Search = () => {
                 <Card key={p._id} hover className="group">
                   <div className="relative overflow-hidden rounded-xl mb-4">
                     <img
-                      src={`https://ecommerce-backend-s84l.onrender.com/api/v1/product/product-photo/${p._id}`}
+                      src={API_ENDPOINTS.PRODUCT.GET_PHOTO(p._id)}
                       alt={p.name}
                       className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-300"
                     />

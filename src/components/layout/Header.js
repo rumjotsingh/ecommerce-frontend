@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 import { useAuth } from "../../context/auth";
 import toast from "react-hot-toast";
 import SearchInput from "../Form/SearchInput";
 import useCategory from "../../hooks/useCategory";
 import { useCart } from "../../context/cart";
+import { fetchWishlistCount } from "../../redux/slices/wishlistSlice";
 import {
   AiOutlineMenu,
   AiOutlineClose,
@@ -12,12 +14,15 @@ import {
   AiOutlineUser,
   AiOutlineDown,
   AiOutlineSearch,
+  AiOutlineHeart,
 } from "react-icons/ai";
 import { BiCategory } from "react-icons/bi";
 
 const Header = () => {
   const [auth, setAuth] = useAuth();
   const [cart] = useCart();
+  const dispatch = useDispatch();
+  const { count: wishlistCount } = useSelector((state) => state.wishlist);
   const categories = useCategory();
   const navigate = useNavigate();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -25,6 +30,12 @@ const Header = () => {
   const [desktopCategoriesOpen, setDesktopCategoriesOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
   const [searchOpen, setSearchOpen] = useState(false);
+
+  useEffect(() => {
+    if (auth?.token) {
+      dispatch(fetchWishlistCount());
+    }
+  }, [auth?.token, dispatch]);
 
   const handleLogout = () => {
     setAuth({
@@ -36,7 +47,6 @@ const Header = () => {
     toast.success("Logout Successfully");
     navigate("/login");
   };
-  console.log(categories);
 
   return (
     <header className="sticky top-0 z-50 bg-white shadow-soft">
@@ -125,6 +135,23 @@ const Header = () => {
             >
               <AiOutlineSearch size={24} />
             </button>
+
+            {/* Wishlist - Only show if user is logged in */}
+            {auth?.user && (
+              <Link
+                to="/dashborad/user/wishlist"
+                className="relative flex items-center gap-2 px-4 py-2 text-gray-700 hover:text-primary-500 transition-colors"
+              >
+                <AiOutlineHeart size={24} />
+                {wishlistCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-red-500 text-white text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                    {wishlistCount}
+                  </span>
+                )}
+                <span className="hidden md:block font-medium">Wishlist</span>
+              </Link>
+            )}
+
             {/* Cart */}
             <Link
               to="/cart"

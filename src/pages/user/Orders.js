@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import UserMenu from "../../components/layout/UserMenu";
 import Layout from "./../../components/layout/layout";
 import axios from "axios";
+import { API_ENDPOINTS } from "../../config/api";
 import { useAuth } from "../../context/auth";
 import moment from "moment";
 import Card from "../../components/UI/Card";
@@ -21,9 +22,7 @@ const Orders = () => {
   const getOrders = async () => {
     try {
       setLoading(true);
-      const { data } = await axios.get(
-        "https://ecommerce-backend-s84l.onrender.com/api/v1/auth/orders"
-      );
+      const { data } = await axios.get(API_ENDPOINTS.ORDER.GET_ALL);
       setOrders(data);
     } catch (error) {
       console.log(error);
@@ -149,7 +148,7 @@ const Orders = () => {
                             className="flex gap-4 p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors"
                           >
                             <img
-                              src={`https://ecommerce-backend-s84l.onrender.com/api/v1/product/product-photo/${product._id}`}
+                              src={API_ENDPOINTS.PRODUCT.GET_PHOTO(product._id)}
                               alt={product.name}
                               className="w-20 h-20 object-cover rounded-lg flex-shrink-0"
                             />

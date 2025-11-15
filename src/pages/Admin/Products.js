@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import AdminMenu from "../../components/layout/AdminMenu";
 import Layout from "./../../components/layout/layout";
 import axios from "axios";
+import { API_ENDPOINTS } from "../../config/api";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 import Card from "../../components/UI/Card";
@@ -16,9 +17,7 @@ const Products = () => {
   const getAllProducts = async () => {
     try {
       setLoading(true);
-      const { data } = await axios.get(
-        "https://ecommerce-backend-s84l.onrender.com/api/v1/product/get-product"
-      );
+      const { data } = await axios.get(API_ENDPOINTS.PRODUCT.GET_ALL);
       setProducts(data.products);
     } catch (error) {
       console.log(error);
@@ -81,7 +80,7 @@ const Products = () => {
                       <Card hover className="h-full">
                         <div className="relative overflow-hidden rounded-xl mb-4">
                           <img
-                            src={`https://ecommerce-backend-s84l.onrender.com/api/v1/product/product-photo/${p._id}`}
+                            src={API_ENDPOINTS.PRODUCT.GET_PHOTO(p._id)}
                             alt={p.name}
                             className="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-300"
                           />

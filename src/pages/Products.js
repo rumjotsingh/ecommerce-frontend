@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import Layout from "../components/layout/layout";
 import axios from "axios";
+import { API_ENDPOINTS } from "../config/api";
 import { Checkbox, Radio } from "antd";
 import { Prices } from "../components/Prices";
 import ProductCard from "../components/Product/ProductCard";
@@ -25,9 +26,7 @@ const Products = () => {
   // Get all categories
   const getAllCategory = async () => {
     try {
-      const { data } = await axios.get(
-        "https://ecommerce-backend-s84l.onrender.com/api/v1/category/get-category"
-      );
+      const { data } = await axios.get(API_ENDPOINTS.CATEGORY.GET_ALL);
       if (data?.success) {
         setCategories(data?.category);
       }
@@ -45,9 +44,7 @@ const Products = () => {
   const getAllProducts = async () => {
     try {
       setLoading(true);
-      const { data } = await axios.get(
-        `https://ecommerce-backend-s84l.onrender.com/api/v1/product/product-list/${page}`
-      );
+      const { data } = await axios.get(API_ENDPOINTS.PRODUCT.LIST(page));
       setLoading(false);
       setProducts(data.products);
     } catch (error) {
@@ -59,9 +56,7 @@ const Products = () => {
   // Get total count
   const getTotal = async () => {
     try {
-      const { data } = await axios.get(
-        "https://ecommerce-backend-s84l.onrender.com/api/v1/product/product-count"
-      );
+      const { data } = await axios.get(API_ENDPOINTS.PRODUCT.COUNT);
       setTotal(data?.total);
     } catch (error) {
       console.log(error);
@@ -77,9 +72,7 @@ const Products = () => {
   const loadMore = async () => {
     try {
       setLoading(true);
-      const { data } = await axios.get(
-        `https://ecommerce-backend-s84l.onrender.com/api/v1/product/product-list/${page}`
-      );
+      const { data } = await axios.get(API_ENDPOINTS.PRODUCT.LIST(page));
       setLoading(false);
       setProducts([...products, ...data?.products]);
     } catch (error) {
@@ -110,13 +103,10 @@ const Products = () => {
   // Get filtered products
   const filterProduct = async () => {
     try {
-      const { data } = await axios.post(
-        "https://ecommerce-backend-s84l.onrender.com/api/v1/product/product-filters",
-        {
-          checked,
-          radio,
-        }
-      );
+      const { data } = await axios.post(API_ENDPOINTS.PRODUCT.FILTER, {
+        checked,
+        radio,
+      });
       setProducts(data?.products);
     } catch (error) {
       console.log(error);

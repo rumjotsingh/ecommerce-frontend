@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Layout from "./../../components/layout/layout";
 import axios from "axios";
 import { useNavigate, useLocation, Link } from "react-router-dom";
+import { API_ENDPOINTS } from "../../config/api";
 import toast from "react-hot-toast";
 import { useAuth } from "../../context/auth";
 import {
@@ -25,13 +26,10 @@ const Login = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const res = await axios.post(
-        "https://ecommerce-backend-s84l.onrender.com/api/v1/auth/login",
-        {
-          email,
-          password,
-        }
-      );
+      const res = await axios.post(API_ENDPOINTS.AUTH.LOGIN, {
+        email,
+        password,
+      });
       if (res && res.data.success) {
         toast.success(res.data && res.data.message, {
           duration: 2000,

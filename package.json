@@ -1,11 +1,12 @@
 {
   "name": "client",
-  "proxy": "https://ecommerce-backend-s84l.onrender.com",
+  "proxy": "https://ecommercebackend-mrt6.onrender.com",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
     "@fortawesome/fontawesome-svg-core": "^6.6.0",
     "@fortawesome/react-fontawesome": "^0.2.2",
+    "@reduxjs/toolkit": "^2.10.1",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",
@@ -18,6 +19,7 @@
     "react-helmet": "^6.1.0",
     "react-hot-toast": "^2.4.1",
     "react-icons": "^5.2.1",
+    "react-redux": "^9.2.0",
     "react-router-dom": "^6.26.0",
     "react-scripts": "5.0.1",
     "react-toastify": "^10.0.5",

@@ -6,6 +6,7 @@ const Select = ({
   error,
   className = "",
   containerClassName = "",
+  children,
   ...props
 }) => {
   return (
@@ -21,11 +22,12 @@ const Select = ({
         } ${className}`}
         {...props}
       >
-        {options.map((option, index) => (
-          <option key={index} value={option.value}>
-            {option.label}
-          </option>
-        ))}
+        {children ||
+          options.map((option, index) => (
+            <option key={index} value={option.value}>
+              {option.label}
+            </option>
+          ))}
       </select>
       {error && <p className="mt-1 text-sm text-red-500">{error}</p>}
     </div>

@@ -6,6 +6,7 @@ import {
   AiOutlineShop,
   AiOutlineUser,
   AiOutlineShoppingCart,
+  AiOutlineTag,
 } from "react-icons/ai";
 import { BiCategory } from "react-icons/bi";
 import Card from "../UI/Card";
@@ -31,6 +32,11 @@ const AdminMenu = () => {
       path: "/dashborad/admin/products",
       icon: <AiOutlineShop size={20} />,
       label: "Products",
+    },
+    {
+      path: "/dashborad/admin/coupons",
+      icon: <AiOutlineTag size={20} />,
+      label: "Coupons",
     },
     {
       path: "/dashborad/admin/orders",

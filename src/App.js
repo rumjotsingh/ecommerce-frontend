@@ -19,6 +19,7 @@ import CreateProduct from "./pages/Admin/CreateProduct";
 import CreateCategory from "./pages/Admin/CreateCategory";
 import Orders from "./pages/user/Orders";
 import Profile from "./pages/user/Profile";
+import Wishlist from "./pages/user/Wishlist";
 import UpdateProduct from "./pages/Admin/UpdateProduct";
 import AdminProducts from "./pages/Admin/Products";
 import Products from "./pages/Products";
@@ -28,6 +29,7 @@ import Categories from "./pages/Categories";
 import CategoryProduct from "./pages/CategoryProduct";
 import CartPage from "./pages/CartPage";
 import AdminOrders from "./pages/Admin/AdminOrder";
+import AdminCoupons from "./pages/Admin/Coupons";
 function App() {
   return (
     <>
@@ -44,6 +46,7 @@ function App() {
           <Route path="user" element={<Dashborad />}></Route>
           <Route path="user/orders" element={<Orders />} />
           <Route path="user/profile" element={<Profile />} />
+          <Route path="user/wishlist" element={<Wishlist />} />
         </Route>
         <Route path="/dashborad" element={<AdminRoute />}>
           <Route path="admin" element={<AdminDashboard />}></Route>
@@ -51,6 +54,7 @@ function App() {
           <Route path="admin/create-product" element={<CreateProduct />} />
           <Route path="admin/products" element={<AdminProducts />} />
           <Route path="admin/product/:slug" element={<UpdateProduct />} />
+          <Route path="admin/coupons" element={<AdminCoupons />} />
           <Route path="admin/users" element={<Users />} />
           <Route path="admin/orders" element={<AdminOrders />} />
         </Route>

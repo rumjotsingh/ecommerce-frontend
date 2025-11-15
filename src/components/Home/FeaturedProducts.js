@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { API_ENDPOINTS } from "../../config/api";
 import ProductCard from "../Product/ProductCard";
 import { AiOutlineArrowRight } from "react-icons/ai";
 import { useNavigate } from "react-router-dom";
@@ -12,9 +13,7 @@ const FeaturedProducts = () => {
   const getAllProducts = async () => {
     try {
       setLoading(true);
-      const { data } = await axios.get(
-        "https://ecommerce-backend-s84l.onrender.com/api/v1/product/product-list/1"
-      );
+      const { data } = await axios.get(API_ENDPOINTS.PRODUCT.LIST(1));
       setLoading(false);
       setProducts(data.products?.slice(0, 8) || []);
     } catch (error) {

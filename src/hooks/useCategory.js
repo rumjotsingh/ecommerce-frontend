@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import { API_ENDPOINTS } from "../config/api";
 
 export default function useCategory() {
   const [categories, setCategories] = useState([]);
@@ -7,7 +8,7 @@ export default function useCategory() {
   //get cat
   const getCategories = async () => {
     try {
-      const { data } = await axios.get("https://ecommerce-backend-s84l.onrender.com/api/v1/category/get-category");
+      const { data } = await axios.get(API_ENDPOINTS.CATEGORY.GET_ALL);
       setCategories(data?.category);
     } catch (error) {
       console.log(error);

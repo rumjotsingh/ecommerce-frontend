@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { API_ENDPOINTS } from "../../config/api";
 import AdminMenu from "../../components/layout/AdminMenu";
 import Layout from "../../components/layout/layout";
 import { useAuth } from "../../context/auth";
@@ -29,9 +30,7 @@ const AdminOrders = () => {
   const getOrders = async () => {
     try {
       setLoading(true);
-      const { data } = await axios.get(
-        "https://ecommerce-backend-s84l.onrender.com/api/v1/auth/all-orders"
-      );
+      const { data } = await axios.get(API_ENDPOINTS.ORDER.GET_ALL_ADMIN);
       setOrders(data);
     } catch (error) {
       console.log(error);
@@ -47,7 +46,7 @@ const AdminOrders = () => {
   const handleChange = async (orderId, value) => {
     try {
       const { data } = await axios.put(
-        `https://ecommerce-backend-s84l.onrender.com/api/v1/auth/order-status/${orderId}`,
+        API_ENDPOINTS.ORDER.UPDATE_STATUS(orderId),
         {
           status: value,
         }
@@ -164,6 +163,37 @@ const AdminOrders = () => {
                           </div>
                         </div>
 
+                        {/* Payment Details */}
+                        {order?.payment && (
+                          <div className="mt-4 p-4 bg-gray-50 rounded-xl space-y-2">
+                            <h4 className="text-sm font-semibold text-gray-700 mb-3">
+                              Payment Details
+                            </h4>
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                              {order?.payment?.razorpay_order_id && (
+                                <div>
+                                  <span className="text-gray-600">
+                                    Order ID:
+                                  </span>
+                                  <p className="font-mono text-gray-900 break-all">
+                                    {order.payment.razorpay_order_id}
+                                  </p>
+                                </div>
+                              )}
+                              {order?.payment?.razorpay_payment_id && (
+                                <div>
+                                  <span className="text-gray-600">
+                                    Payment ID:
+                                  </span>
+                                  <p className="font-mono text-gray-900 break-all">
+                                    {order.payment.razorpay_payment_id}
+                                  </p>
+                                </div>
+                              )}
+                            </div>
+                          </div>
+                        )}
+
                         {/* Status Update */}
                         <div className="mt-4 flex items-center gap-4">
                           <label className="text-sm font-medium text-gray-700">
@@ -192,7 +222,7 @@ const AdminOrders = () => {
                             className="flex gap-4 p-4 bg-gray-50 rounded-xl hover:bg-gray-100 transition-colors"
                           >
                             <img
-                              src={`https://ecommerce-backend-s84l.onrender.com/api/v1/product/product-photo/${product._id}`}
+                              src={API_ENDPOINTS.PRODUCT.GET_PHOTO(product._id)}
                               alt={product.name}
                               className="w-20 h-20 object-cover rounded-lg flex-shrink-0"
                             />

@@ -4,6 +4,7 @@ import {
   AiOutlineDashboard,
   AiOutlineUser,
   AiOutlineShoppingCart,
+  AiOutlineHeart,
 } from "react-icons/ai";
 import Card from "../UI/Card";
 
@@ -23,6 +24,11 @@ const UserMenu = () => {
       path: "/dashborad/user/orders",
       icon: <AiOutlineShoppingCart size={20} />,
       label: "Orders",
+    },
+    {
+      path: "/dashborad/user/wishlist",
+      icon: <AiOutlineHeart size={20} />,
+      label: "Wishlist",
     },
   ];
 
