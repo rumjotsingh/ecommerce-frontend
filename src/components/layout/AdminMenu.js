@@ -1,45 +1,74 @@
 import React from "react";
 import { NavLink } from "react-router-dom";
-const AdminMenu = () => {
-  return (
-    <>
-      <div className="text-center">
-        <div className="list-group">
-          <h4>Admin Panel</h4>
-          <NavLink
-            to="/dashborad/admin/create-category"
-            className="list-group-item list-group-item-action"
-          >
-            Create Category
-          </NavLink>
-          <NavLink
-            to="/dashborad/admin/create-product"
-            className="list-group-item list-group-item-action"
-          >
-            Create Product
-          </NavLink>
+import {
+  AiOutlineDashboard,
+  AiOutlineAppstoreAdd,
+  AiOutlineShop,
+  AiOutlineUser,
+  AiOutlineShoppingCart,
+} from "react-icons/ai";
+import { BiCategory } from "react-icons/bi";
+import Card from "../UI/Card";
 
+const AdminMenu = () => {
+  const menuItems = [
+    {
+      path: "/dashborad/admin",
+      icon: <AiOutlineDashboard size={20} />,
+      label: "Dashboard",
+    },
+    {
+      path: "/dashborad/admin/create-category",
+      icon: <BiCategory size={20} />,
+      label: "Create Category",
+    },
+    {
+      path: "/dashborad/admin/create-product",
+      icon: <AiOutlineAppstoreAdd size={20} />,
+      label: "Create Product",
+    },
+    {
+      path: "/dashborad/admin/products",
+      icon: <AiOutlineShop size={20} />,
+      label: "Products",
+    },
+    {
+      path: "/dashborad/admin/orders",
+      icon: <AiOutlineShoppingCart size={20} />,
+      label: "Orders",
+    },
+    {
+      path: "/dashborad/admin/users",
+      icon: <AiOutlineUser size={20} />,
+      label: "Users",
+    },
+  ];
+
+  return (
+    <Card className="sticky top-24">
+      <div className="space-y-2">
+        <h3 className="text-xl font-bold text-gray-900 mb-6 pb-4 border-b">
+          Admin Panel
+        </h3>
+        {menuItems.map((item, index) => (
           <NavLink
-            to="/dashborad/admin/products"
-            className="list-group-item list-group-item-action"
+            key={index}
+            to={item.path}
+            end={item.path === "/dashborad/admin"}
+            className={({ isActive }) =>
+              `flex items-center gap-3 px-4 py-3 rounded-xl font-medium transition-all ${
+                isActive
+                  ? "bg-gradient-to-r from-primary-500 to-secondary-500 text-white shadow-lg"
+                  : "text-gray-700 hover:bg-gray-50"
+              }`
+            }
           >
-            Products
+            {item.icon}
+            <span>{item.label}</span>
           </NavLink>
-          <NavLink
-            to="/dashborad/admin/users"
-            className="list-group-item list-group-item-action"
-          >
-            Users
-          </NavLink>
-          <NavLink
-            to="/dashborad/admin/orders"
-            className="list-group-item list-group-item-action"
-          >
-            Orders
-          </NavLink>
-        </div>
+        ))}
       </div>
-    </>
+    </Card>
   );
 };
 

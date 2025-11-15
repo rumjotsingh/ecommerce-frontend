@@ -5,6 +5,15 @@ import toast from "react-hot-toast";
 import axios from "axios";
 import { Select } from "antd";
 import { useNavigate, useParams } from "react-router-dom";
+import Card from "../../components/UI/Card";
+import Input from "../../components/UI/Input";
+import Button from "../../components/UI/Button";
+import {
+  AiOutlineSave,
+  AiOutlineDelete,
+  AiOutlineCloudUpload,
+} from "react-icons/ai";
+import { BiPackage } from "react-icons/bi";
 const { Option } = Select;
 
 const UpdateProduct = () => {
@@ -19,6 +28,7 @@ const UpdateProduct = () => {
   const [shipping, setShipping] = useState("");
   const [photo, setPhoto] = useState("");
   const [id, setId] = useState("");
+  const [loading, setLoading] = useState(false);
 
   //get single product
   const getSingleProduct = async () => {
@@ -45,7 +55,9 @@ const UpdateProduct = () => {
   //get all category
   const getAllCategory = async () => {
     try {
-      const { data } = await axios.get("https://ecommerce-backend-s84l.onrender.com/api/v1/category/get-category");
+      const { data } = await axios.get(
+        "https://ecommerce-backend-s84l.onrender.com/api/v1/category/get-category"
+      );
       if (data?.success) {
         setCategories(data?.category);
       }
@@ -63,6 +75,7 @@ const UpdateProduct = () => {
   const handleUpdate = async (e) => {
     e.preventDefault();
     try {
+      setLoading(true);
       const productData = new FormData();
       productData.append("name", name);
       productData.append("description", description);
@@ -70,33 +83,48 @@ const UpdateProduct = () => {
       productData.append("quantity", quantity);
       photo && productData.append("photo", photo);
       productData.append("category", category);
-      const { data } = axios.put(
+      const { data } = await axios.put(
         `https://ecommerce-backend-s84l.onrender.com/api/v1/product/update-product/${id}`,
         productData
       );
+
       if (data?.success) {
-        toast.error(data?.message);
-      } else {
-        toast.success("Product Updated Successfully");
+        toast.success("Product Updated Successfully", {
+          duration: 2000,
+          style: {
+            background: "#0EA5A4",
+            color: "#fff",
+          },
+        });
         navigate("/dashborad/admin/products");
       }
     } catch (error) {
       console.log(error);
       toast.error("something went wrong");
+    } finally {
+      setLoading(false);
     }
   };
 
   //delete a product
   const handleDelete = async () => {
     try {
-      let answer = window.prompt("Are You Sure want to delete this product ? ");
-      if (!answer) {
+      const confirmed = window.confirm(
+        "Are you sure you want to delete this product? This action cannot be undone."
+      );
+      if (!confirmed) {
         return;
       }
       const { data } = await axios.delete(
         `https://ecommerce-backend-s84l.onrender.com/api/v1/product/delete-product/${id}`
       );
-      toast.success("Product DEleted Succfully");
+      toast.success("Product Deleted Successfully", {
+        duration: 2000,
+        style: {
+          background: "#0EA5A4",
+          color: "#fff",
+        },
+      });
       navigate("/dashborad/admin/products");
     } catch (error) {
       console.log(error);
@@ -104,128 +132,188 @@ const UpdateProduct = () => {
     }
   };
   return (
-    <Layout title={"Dashboard - Create Product"}>
-      <div className="container-fluid m-3 p-3">
-        <div className="row">
-          <div className="col-md-3">
-            <AdminMenu />
-          </div>
-          <div className="col-md-9">
-            <h1>Update Product</h1>
-            <div className="m-1 w-75">
-              <Select
-                bordered={false}
-                placeholder="Select a category"
-                size="large"
-                showSearch
-                className="form-select mb-3"
-                onChange={(value) => {
-                  setCategory(value);
-                }}
-                value={category}
-              >
-                {categories?.map((c) => (
-                  <Option key={c._id} value={c._id}>
-                    {c.name}
-                  </Option>
-                ))}
-              </Select>
-              <div className="mb-3">
-                <label className="btn btn-outline-secondary col-md-12">
-                  {photo ? photo.name : "Upload Photo"}
-                  <input
-                    type="file"
-                    name="photo"
-                    accept="image/*"
-                    onChange={(e) => setPhoto(e.target.files[0])}
-                    hidden
-                  />
-                </label>
-              </div>
-              <div className="mb-3">
-                {photo ? (
-                  <div className="text-center">
-                    <img
-                      src={URL.createObjectURL(photo)}
-                      alt="product_photo"
-                      height={"200px"}
-                      className="img img-responsive"
-                    />
-                  </div>
-                ) : (
-                  <div className="text-center">
-                    <img
-                      src={`https://ecommerce-backend-s84l.onrender.com/api/v1/product/product-photo/${id}`}
-                      alt="product_photo"
-                      height={"200px"}
-                      className="img img-responsive"
-                    />
-                  </div>
-                )}
-              </div>
-              <div className="mb-3">
-                <input
-                  type="text"
-                  value={name}
-                  placeholder="write a name"
-                  className="form-control"
-                  onChange={(e) => setName(e.target.value)}
-                />
-              </div>
-              <div className="mb-3">
-                <textarea
-                  type="text"
-                  value={description}
-                  placeholder="write a description"
-                  className="form-control"
-                  onChange={(e) => setDescription(e.target.value)}
-                />
-              </div>
+    <Layout title={"Dashboard - Update Product"}>
+      <div className="min-h-screen bg-gray-50 py-8">
+        <div className="container mx-auto px-4 lg:px-8">
+          <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+            {/* Sidebar */}
+            <div className="lg:col-span-1">
+              <AdminMenu />
+            </div>
 
-              <div className="mb-3">
-                <input
-                  type="number"
-                  value={price}
-                  placeholder="write a Price"
-                  className="form-control"
-                  onChange={(e) => setPrice(e.target.value)}
-                />
-              </div>
-              <div className="mb-3">
-                <input
-                  type="number"
-                  value={quantity}
-                  placeholder="write a quantity"
-                  className="form-control"
-                  onChange={(e) => setQuantity(e.target.value)}
-                />
-              </div>
-              <div className="mb-3">
-                <Select
-                  bordered={false}
-                  placeholder="Select Shipping "
-                  size="large"
-                  showSearch
-                  className="form-select mb-3"
-                  onChange={(value) => {
-                    setShipping(value);
-                  }}
-                  value={shipping ? "yes" : "No"}
-                >
-                  <Option value="0">No</Option>
-                  <Option value="1">Yes</Option>
-                </Select>
-              </div>
-              <div className="mb-3">
-                <button className="btn btn-primary" onClick={handleUpdate}>
-                  UPDATE PRODUCT
-                </button>
-              </div>
-              <div className="mb-3">
-                <button className="btn btn-danger" onClick={handleDelete}>
-                  DELETE PRODUCT
-                </button>
-              </div>
+            {/* Main Content */}
+            <div className="lg:col-span-3 space-y-6">
+              {/* Header */}
+              <Card>
+                <div className="flex items-center gap-4">
+                  <div className="w-12 h-12 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-xl flex items-center justify-center">
+                    <BiPackage size={24} className="text-white" />
+                  </div>
+                  <div>
+                    <h1 className="text-2xl font-bold text-gray-900">
+                      Update Product
+                    </h1>
+                    <p className="text-gray-600">Edit product information</p>
+                  </div>
+                </div>
+              </Card>
+
+              {/* Update Form */}
+              <Card>
+                <form onSubmit={handleUpdate} className="space-y-6">
+                  {/* Category Selection */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Category *
+                    </label>
+                    <Select
+                      placeholder="Select a category"
+                      size="large"
+                      showSearch
+                      className="w-full"
+                      onChange={(value) => setCategory(value)}
+                      value={category}
+                      required
+                    >
+                      {categories?.map((c) => (
+                        <Option key={c._id} value={c._id}>
+                          {c.name}
+                        </Option>
+                      ))}
+                    </Select>
+                  </div>
+
+                  {/* Photo Upload */}
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Product Photo
+                    </label>
+                    <label className="flex flex-col items-center justify-center w-full h-48 border-2 border-gray-300 border-dashed rounded-xl cursor-pointer bg-gray-50 hover:bg-gray-100 transition-colors">
+                      {photo ? (
+                        <img
+                          src={URL.createObjectURL(photo)}
+                          alt="product_photo"
+                          className="h-full w-full object-contain rounded-xl"
+                        />
+                      ) : id ? (
+                        <img
+                          src={`https://ecommerce-backend-s84l.onrender.com/api/v1/product/product-photo/${id}`}
+                          alt="product_photo"
+                          className="h-full w-full object-contain rounded-xl"
+                        />
+                      ) : (
+                        <div className="flex flex-col items-center justify-center pt-5 pb-6">
+                          <AiOutlineCloudUpload
+                            size={48}
+                            className="text-gray-400 mb-3"
+                          />
+                          <p className="mb-2 text-sm text-gray-500">
+                            <span className="font-semibold">
+                              Click to upload
+                            </span>{" "}
+                            or drag and drop
+                          </p>
+                          <p className="text-xs text-gray-500">
+                            PNG, JPG or JPEG
+                          </p>
+                        </div>
+                      )}
+                      <input
+                        type="file"
+                        name="photo"
+                        accept="image/*"
+                        onChange={(e) => setPhoto(e.target.files[0])}
+                        hidden
+                      />
+                    </label>
+                  </div>
+
+                  {/* Product Details */}
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <Input
+                      label="Product Name"
+                      type="text"
+                      value={name}
+                      placeholder="Enter product name"
+                      onChange={(e) => setName(e.target.value)}
+                      required
+                    />
+
+                    <Input
+                      label="Price"
+                      type="number"
+                      value={price}
+                      placeholder="Enter price"
+                      onChange={(e) => setPrice(e.target.value)}
+                      required
+                    />
+                  </div>
+
+                  <div>
+                    <label className="block text-sm font-medium text-gray-700 mb-2">
+                      Description *
+                    </label>
+                    <textarea
+                      value={description}
+                      placeholder="Enter product description"
+                      className="w-full px-4 py-2.5 border border-gray-300 rounded-xl focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none transition-all"
+                      onChange={(e) => setDescription(e.target.value)}
+                      rows={4}
+                      required
+                    />
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <Input
+                      label="Quantity"
+                      type="number"
+                      value={quantity}
+                      placeholder="Enter quantity"
+                      onChange={(e) => setQuantity(e.target.value)}
+                      required
+                    />
+
+                    <div>
+                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                        Shipping *
+                      </label>
+                      <Select
+                        placeholder="Select shipping"
+                        size="large"
+                        className="w-full"
+                        onChange={(value) => setShipping(value)}
+                        value={shipping ? "1" : "0"}
+                        required
+                      >
+                        <Option value="0">No</Option>
+                        <Option value="1">Yes</Option>
+                      </Select>
+                    </div>
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className="flex gap-4 pt-4">
+                    <Button
+                      type="submit"
+                      variant="primary"
+                      size="lg"
+                      icon={<AiOutlineSave size={20} />}
+                      disabled={loading}
+                    >
+                      {loading ? "Updating..." : "UPDATE PRODUCT"}
+                    </Button>
+                    <Button
+                      type="button"
+                      variant="danger"
+                      size="lg"
+                      icon={<AiOutlineDelete size={20} />}
+                      onClick={handleDelete}
+                    >
+                      DELETE PRODUCT
+                    </Button>
+                  </div>
+                </form>
+              </Card>
             </div>
           </div>
         </div>
