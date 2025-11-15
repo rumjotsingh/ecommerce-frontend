@@ -47,6 +47,7 @@ const Orders = () => {
         return "default";
     }
   };
+  console.log(orders);
 
   return (
     <Layout title={"Your Orders"}>
@@ -91,7 +92,7 @@ const Orders = () => {
                 </div>
               ) : orders?.length > 0 ? (
                 <div className="space-y-6">
-                  {orders.map((order, index) => (
+                  {orders?.map((order, index) => (
                     <Card key={order._id}>
                       {/* Order Header */}
                       <div className="border-b pb-4 mb-4">
@@ -114,7 +115,7 @@ const Orders = () => {
                               </span>
                             </div>
                             <div className="flex items-center gap-2">
-                              {order?.payment?.success ? (
+                              {order?.payment?.razorpay_payment_id ? (
                                 <>
                                   <AiOutlineCheckCircle
                                     size={16}
