@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Layout from "./../components/layout/layout";
 import axios from "axios";
 import { useParams, useNavigate } from "react-router-dom";
@@ -58,20 +58,30 @@ const ProductDetails = () => {
 
   //initial details
   //getProduct
-  const getProduct = async () => {
+  const getProduct = useCallback(async () => {
+    if (!params.slug) return;
     try {
       const { data } = await axios.get(
         API_ENDPOINTS.PRODUCT.GET_SINGLE(params.slug)
       );
       setProduct(data?.product);
-      getSimilarProduct(data?.product._id, data?.product.category._id);
+      if (data?.product._id && data?.product.category._id) {
+        const relatedData = await axios.get(
+          API_ENDPOINTS.PRODUCT.RELATED(
+            data.product._id,
+            data.product.category._id
+          )
+        );
+        setRelatedProducts(relatedData.data?.products || []);
+      }
     } catch (error) {
       console.log(error);
     }
-  };
+  }, [params.slug]);
+
   useEffect(() => {
-    if (params?.slug) getProduct();
-  }, [params?.slug, getProduct]);
+    getProduct();
+  }, [getProduct]);
 
   useEffect(() => {
     // Check if product is in wishlist
@@ -91,16 +101,6 @@ const ProductDetails = () => {
       dispatch(fetchProductReviews(product._id));
     }
   }, [product._id, dispatch]);
-
-  //get similar product
-  const getSimilarProduct = async (pid, cid) => {
-    try {
-      const { data } = await axios.get(API_ENDPOINTS.PRODUCT.RELATED(pid, cid));
-      setRelatedProducts(data?.products);
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
   const handleAddToCart = () => {
     // Check if product has stock

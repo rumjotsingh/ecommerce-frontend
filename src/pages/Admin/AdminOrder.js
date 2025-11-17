@@ -71,6 +71,7 @@ const AdminOrders = () => {
         return "default";
     }
   };
+  // console.log(orders);
 
   return (
     <Layout title={"All Orders Data"}>
@@ -144,7 +145,7 @@ const AdminOrders = () => {
                               </span>
                             </div>
                             <div className="flex items-center gap-1.5 sm:gap-2">
-                              {order?.payment?.success ? (
+                              {order?.payment?.razorpay_order_id ? (
                                 <>
                                   <AiOutlineCheckCircle
                                     size={14}

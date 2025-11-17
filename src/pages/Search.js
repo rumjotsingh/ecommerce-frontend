@@ -2,7 +2,8 @@ import React from "react";
 import Layout from "./../components/layout/layout";
 import { useSearch } from "../context/search";
 import { useNavigate } from "react-router-dom";
-import { useCart } from "../context/cart";
+import { useDispatch } from "react-redux";
+import { addToCart } from "../redux/slices/cartSlice";
 import { API_ENDPOINTS } from "../config/api";
 import toast from "react-hot-toast";
 import Card from "../components/UI/Card";
@@ -15,8 +16,8 @@ import {
 
 const Search = () => {
   const [values] = useSearch();
-  const [cart, setCart] = useCart();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   return (
     <Layout title={"Search results"}>
@@ -84,12 +85,14 @@ const Search = () => {
                         variant="secondary"
                         size="sm"
                         onClick={() => {
-                          setCart([...cart, p]);
-                          localStorage.setItem(
-                            "cart",
-                            JSON.stringify([...cart, p])
-                          );
-                          toast.success("Item added to cart");
+                          dispatch(addToCart({ product: p, quantity: 1 }));
+                          toast.success("Item added to cart", {
+                            duration: 2000,
+                            style: {
+                              background: "#0EA5A4",
+                              color: "#fff",
+                            },
+                          });
                         }}
                         icon={
                           <AiOutlineShoppingCart

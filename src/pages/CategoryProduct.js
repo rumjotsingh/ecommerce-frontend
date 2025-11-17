@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import Layout from "../components/layout/layout";
 import { useParams, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import axios from "axios";
 import { API_ENDPOINTS } from "../config/api";
-import { useCart } from "../context/cart";
+import { addToCart } from "../redux/slices/cartSlice";
 import toast from "react-hot-toast";
 import Card from "../components/UI/Card";
 import Button from "../components/UI/Button";
@@ -13,16 +14,12 @@ import { AiOutlineShoppingCart, AiOutlineEye } from "react-icons/ai";
 const CategoryProduct = () => {
   const params = useParams();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [products, setProducts] = useState([]);
   const [category, setCategory] = useState([]);
-  const [cart, setCart] = useCart();
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (params?.slug) getPrductsByCat();
-  }, [params?.slug]);
-
-  const getPrductsByCat = async () => {
+  const getPrductsByCat = React.useCallback(async () => {
     try {
       setLoading(true);
       const { data } = await axios.get(
@@ -36,7 +33,11 @@ const CategoryProduct = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [params.slug]);
+
+  useEffect(() => {
+    if (params?.slug) getPrductsByCat();
+  }, [params?.slug, getPrductsByCat]);
 
   return (
     <Layout title={`${category?.name} - Products`}>
@@ -106,12 +107,14 @@ const CategoryProduct = () => {
                         variant="secondary"
                         size="sm"
                         onClick={() => {
-                          setCart([...cart, p]);
-                          localStorage.setItem(
-                            "cart",
-                            JSON.stringify([...cart, p])
-                          );
-                          toast.success("Item added to cart");
+                          dispatch(addToCart({ product: p, quantity: 1 }));
+                          toast.success("Item added to cart", {
+                            duration: 2000,
+                            style: {
+                              background: "#0EA5A4",
+                              color: "#fff",
+                            },
+                          });
                         }}
                         icon={
                           <AiOutlineShoppingCart

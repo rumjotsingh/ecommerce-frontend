@@ -6,7 +6,7 @@ import {
   fetchWishlist,
   removeFromWishlist,
 } from "../../redux/slices/wishlistSlice";
-import { useCart } from "../../context/cart";
+import { addToCart } from "../../redux/slices/cartSlice";
 import { API_ENDPOINTS } from "../../config/api";
 import toast from "react-hot-toast";
 import {
@@ -21,7 +21,6 @@ import Spinner from "../../components/UI/Spinner";
 const Wishlist = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const [cart, setCart] = useCart();
   const { items, loading, error } = useSelector((state) => state.wishlist);
 
   useEffect(() => {
@@ -32,8 +31,6 @@ const Wishlist = () => {
     try {
       await dispatch(removeFromWishlist(productId)).unwrap();
       toast.success("Removed from wishlist", { duration: 2000 });
-      // Refresh wishlist immediately
-      await dispatch(fetchWishlist()).unwrap();
     } catch (err) {
       toast.error(err || "Failed to remove from wishlist");
       console.error("Remove error:", err);
@@ -41,8 +38,7 @@ const Wishlist = () => {
   };
 
   const handleAddToCart = (product) => {
-    setCart([...cart, product]);
-    localStorage.setItem("cart", JSON.stringify([...cart, product]));
+    dispatch(addToCart({ product, quantity: 1 }));
     toast.success("Added to cart", {
       duration: 2000,
       style: {
