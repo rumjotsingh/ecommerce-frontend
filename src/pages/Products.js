@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import Layout from "../components/layout/layout";
 import axios from "axios";
 import { API_ENDPOINTS } from "../config/api";
