@@ -41,7 +41,7 @@ const Products = () => {
   }, []);
 
   // Get products
-  const getAllProducts = useCallback(async () => {
+  const getAllProducts = async () => {
     try {
       setLoading(true);
       const { data } = await axios.get(API_ENDPOINTS.PRODUCT.LIST(page));
@@ -51,7 +51,7 @@ const Products = () => {
       setLoading(false);
       console.log(error);
     }
-  }, [page]);
+  };
 
   // Get total count
   const getTotal = async () => {
@@ -64,20 +64,20 @@ const Products = () => {
   };
 
   // Load more
-  const loadMore = useCallback(async () => {
+  const loadMore = async () => {
     try {
       setLoading(true);
       const { data } = await axios.get(API_ENDPOINTS.PRODUCT.LIST(page));
       setLoading(false);
-      setProducts([...products, ...data?.products]);
+      setProducts((prev) => [...prev, ...data?.products]);
     } catch (error) {
       console.log(error);
       setLoading(false);
     }
-  }, [page, products]);
+  };
 
   // Get filtered products
-  const filterProduct = useCallback(async () => {
+  const filterProduct = async () => {
     try {
       const { data } = await axios.post(API_ENDPOINTS.PRODUCT.FILTER, {
         checked,
@@ -87,7 +87,7 @@ const Products = () => {
     } catch (error) {
       console.log(error);
     }
-  }, [checked, radio]);
+  };
 
   // Filter by category
   const handleFilter = (value, id) => {
@@ -103,15 +103,22 @@ const Products = () => {
   useEffect(() => {
     if (page === 1) return;
     loadMore();
-  }, [page, loadMore]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [page]);
 
   useEffect(() => {
-    if (!checked.length && !radio.length) getAllProducts();
-  }, [checked.length, radio.length, getAllProducts]);
+    if (!checked.length && !radio.length) {
+      getAllProducts();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [checked.length, radio.length]);
 
   useEffect(() => {
-    if (checked.length || radio.length) filterProduct();
-  }, [checked, radio, filterProduct]);
+    if (checked.length || radio.length) {
+      filterProduct();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [checked, radio]);
 
   return (
     <Layout title={"All Products - ShopHub"}>
