@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import Layout from "../components/layout/layout";
 import axios from "axios";
 import { API_ENDPOINTS } from "../config/api";
@@ -38,20 +38,23 @@ const Products = () => {
   useEffect(() => {
     getAllCategory();
     getTotal();
-  }, []);
+    getAllProducts();
+  }, [getAllProducts]);
 
   // Get products
-  const getAllProducts = async () => {
+  const getAllProducts = useCallback(async () => {
     try {
       setLoading(true);
       const { data } = await axios.get(API_ENDPOINTS.PRODUCT.LIST(page));
       setLoading(false);
-      setProducts(data.products);
+      if (data?.products) {
+        setProducts(data.products);
+      }
     } catch (error) {
       setLoading(false);
-      console.log(error);
+      console.error("Error fetching products:", error);
     }
-  };
+  }, [page]);
 
   // Get total count
   const getTotal = async () => {
@@ -101,13 +104,14 @@ const Products = () => {
   };
 
   useEffect(() => {
-    if (page === 1) return;
-    loadMore();
+    if (page > 1) {
+      loadMore();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page]);
 
   useEffect(() => {
-    if (!checked.length && !radio.length) {
+    if (!checked.length && !radio.length && page === 1) {
       getAllProducts();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

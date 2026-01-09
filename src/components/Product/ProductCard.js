@@ -31,6 +31,7 @@ const ProductCard = ({ product }) => {
   const { items: cartItems } = useSelector((state) => state.cart);
   const [isInWishlist, setIsInWishlist] = useState(false);
   const [cartItem, setCartItem] = useState(null);
+  const [imageError, setImageError] = useState(false);
 
   useEffect(() => {
     // Check if product is in wishlist
@@ -118,9 +119,15 @@ const ProductCard = ({ product }) => {
       {/* Image Container */}
       <div className="relative overflow-hidden bg-gray-100 aspect-square">
         <img
-          src={API_ENDPOINTS.PRODUCT.GET_PHOTO(product._id)}
+          src={
+            imageError
+              ? "https://via.placeholder.com/400x400?text=No+Image"
+              : API_ENDPOINTS.PRODUCT.GET_PHOTO(product._id)
+          }
           alt={product.name}
           className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+          onError={() => setImageError(true)}
+          loading="lazy"
         />
 
         {/* Overlay Actions */}
