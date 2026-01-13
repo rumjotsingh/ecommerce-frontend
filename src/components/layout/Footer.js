@@ -1,116 +1,122 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import {
-  AiOutlineShoppingCart,
   AiOutlineMail,
   AiOutlinePhone,
+  AiOutlineEnvironment,
 } from "react-icons/ai";
-import { FaFacebook, FaTwitter, FaInstagram, FaLinkedin } from "react-icons/fa";
 
-function Footer() {
+const Footer = () => {
   return (
-    <footer className="bg-gray-900 text-white mt-16">
-      <div className="container mx-auto px-4 lg:px-8 py-12">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          {/* Brand Section */}
-          <div className="space-y-4">
-            <Link to="/" className="flex items-center gap-2">
-              <div className="bg-gradient-to-r from-primary-500 to-secondary-500 p-2 rounded-xl">
-                <AiOutlineShoppingCart size={24} />
-              </div>
-              <span className="text-2xl font-bold">ShopHub</span>
-            </Link>
-            <p className="text-gray-400 text-sm leading-relaxed">
-              Your one-stop destination for all your shopping needs. Quality
-              products at the best prices.
-            </p>
-            <div className="flex gap-4 pt-2">
-              <a
-                href="https://facebook.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-gray-400 hover:text-primary-500 transition-colors"
-                aria-label="Facebook"
-              >
-                <FaFacebook size={20} />
-              </a>
-              <a
-                href="https://twitter.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-gray-400 hover:text-primary-500 transition-colors"
-                aria-label="Twitter"
-              >
-                <FaTwitter size={20} />
-              </a>
-              <a
-                href="https://instagram.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-gray-400 hover:text-primary-500 transition-colors"
-                aria-label="Instagram"
-              >
-                <FaInstagram size={20} />
-              </a>
-              <a
-                href="https://linkedin.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-gray-400 hover:text-primary-500 transition-colors"
-                aria-label="LinkedIn"
-              >
-                <FaLinkedin size={20} />
-              </a>
-            </div>
-          </div>
-
-          {/* Quick Links */}
+    <footer className="bg-gray-800 text-gray-300 mt-8">
+      {/* Main Footer */}
+      <div className="container mx-auto px-4 py-10">
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+          {/* About */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Quick Links</h3>
-            <ul className="space-y-2">
+            <h3 className="text-white text-sm font-medium mb-4 uppercase tracking-wide">
+              About
+            </h3>
+            <ul className="space-y-2 text-xs">
               <li>
                 <Link
-                  to="/"
-                  className="text-gray-400 hover:text-primary-500 transition-colors text-sm"
+                  to="/contact"
+                  className="hover:text-white transition-colors"
                 >
-                  Home
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/categories"
-                  className="text-gray-400 hover:text-primary-500 transition-colors text-sm"
-                >
-                  Categories
+                  Contact Us
                 </Link>
               </li>
               <li>
                 <Link
                   to="/about"
-                  className="text-gray-400 hover:text-primary-500 transition-colors text-sm"
+                  className="hover:text-white transition-colors"
                 >
                   About Us
                 </Link>
               </li>
               <li>
                 <Link
-                  to="/contact"
-                  className="text-gray-400 hover:text-primary-500 transition-colors text-sm"
+                  to="/about"
+                  className="hover:text-white transition-colors"
                 >
-                  Contact
+                  Careers
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/about"
+                  className="hover:text-white transition-colors"
+                >
+                  Press
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Customer Service */}
+          {/* Help */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Customer Service</h3>
-            <ul className="space-y-2">
+            <h3 className="text-white text-sm font-medium mb-4 uppercase tracking-wide">
+              Help
+            </h3>
+            <ul className="space-y-2 text-xs">
+              <li>
+                <Link to="/faq" className="hover:text-white transition-colors">
+                  FAQ
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/return-policy"
+                  className="hover:text-white transition-colors"
+                >
+                  Returns
+                </Link>
+              </li>
               <li>
                 <Link
                   to="/policy"
-                  className="text-gray-400 hover:text-primary-500 transition-colors text-sm"
+                  className="hover:text-white transition-colors"
+                >
+                  Shipping
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/contact"
+                  className="hover:text-white transition-colors"
+                >
+                  Report Issue
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Policy */}
+          <div>
+            <h3 className="text-white text-sm font-medium mb-4 uppercase tracking-wide">
+              Policy
+            </h3>
+            <ul className="space-y-2 text-xs">
+              <li>
+                <Link
+                  to="/return-policy"
+                  className="hover:text-white transition-colors"
+                >
+                  Return Policy
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/terms"
+                  className="hover:text-white transition-colors"
+                >
+                  Terms of Use
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/policy"
+                  className="hover:text-white transition-colors"
                 >
                   Privacy Policy
                 </Link>
@@ -118,78 +124,76 @@ function Footer() {
               <li>
                 <Link
                   to="/policy"
-                  className="text-gray-400 hover:text-primary-500 transition-colors text-sm"
+                  className="hover:text-white transition-colors"
                 >
-                  Terms & Conditions
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/policy"
-                  className="text-gray-400 hover:text-primary-500 transition-colors text-sm"
-                >
-                  Return Policy
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/policy"
-                  className="text-gray-400 hover:text-primary-500 transition-colors text-sm"
-                >
-                  FAQ
+                  Security
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Contact Info */}
+          {/* Contact */}
           <div>
-            <h3 className="text-lg font-semibold mb-4">Contact Us</h3>
-            <ul className="space-y-3">
-              <li className="flex items-start gap-2 text-gray-400 text-sm">
-                <AiOutlineMail
-                  size={18}
-                  className="text-primary-500 mt-0.5 flex-shrink-0"
+            <h3 className="text-white text-sm font-medium mb-4 uppercase tracking-wide">
+              Contact Us
+            </h3>
+            <ul className="space-y-3 text-xs">
+              <li className="flex items-start gap-2">
+                <AiOutlineEnvironment
+                  className="text-primary-400 mt-0.5 flex-shrink-0"
+                  size={14}
                 />
-                <span className="break-words">support@shophub.com</span>
+                <span>123 Shopping Street, Commerce City, CC 12345</span>
               </li>
-              <li className="flex items-start gap-2 text-gray-400 text-sm">
+              <li className="flex items-center gap-2">
                 <AiOutlinePhone
-                  size={18}
-                  className="text-primary-500 mt-0.5 flex-shrink-0"
+                  className="text-primary-400 flex-shrink-0"
+                  size={14}
                 />
                 <span>+1 (555) 123-4567</span>
               </li>
-            </ul>
-            <div className="mt-6">
-              <h4 className="text-sm font-medium mb-3">Newsletter</h4>
-              <div className="flex gap-2">
-                <input
-                  type="email"
-                  placeholder="Your email"
-                  className="flex-1 min-w-0 px-3 py-2 rounded-lg bg-gray-800 border border-gray-700 text-sm focus:outline-none focus:ring-2 focus:ring-primary-500"
+              <li className="flex items-center gap-2">
+                <AiOutlineMail
+                  className="text-primary-400 flex-shrink-0"
+                  size={14}
                 />
-                <button
-                  type="button"
-                  className="px-4 py-2 bg-gradient-to-r from-primary-500 to-secondary-500 rounded-lg text-sm font-medium hover:shadow-lg transition-all whitespace-nowrap"
-                  onClick={() => {}}
-                >
-                  Subscribe
-                </button>
-              </div>
-            </div>
+                <span>support@shophub.com</span>
+              </li>
+            </ul>
           </div>
         </div>
+      </div>
 
-        {/* Bottom Bar */}
-        <div className="border-t border-gray-800 mt-12 pt-8 text-center">
-          <p className="text-gray-400 text-sm">
-            &copy; {new Date().getFullYear()} ShopHub. All rights reserved.
-          </p>
+      {/* Bottom Bar */}
+      <div className="border-t border-gray-700">
+        <div className="container mx-auto px-4 py-4">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-2">
+              <span className="text-lg font-bold text-white italic">
+                ShopHub
+              </span>
+              <span className="text-[10px] text-yellow-400 italic -mt-2">
+                Explore <span className="text-white">Plus</span>
+              </span>
+            </div>
+            <p className="text-xs text-gray-400 text-center">
+              © {new Date().getFullYear()} ShopHub. All rights reserved.
+            </p>
+            <div className="flex items-center gap-4">
+              <img
+                src="https://static-assets-web.flixcart.com/batman-returns/batman-returns/p/images/payment-method-c454fb.svg"
+                alt="Payment Methods"
+                className="h-6 opacity-60"
+                onError={(e) => {
+                  e.target.style.display = "none";
+                }}
+              />
+            </div>
+          </div>
         </div>
       </div>
     </footer>
   );
-}
+};
 
 export default Footer;

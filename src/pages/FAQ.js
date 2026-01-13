@@ -1,11 +1,7 @@
 import React, { useState } from "react";
 import Layout from "./../components/layout/layout";
-import Card from "../components/UI/Card";
-import {
-  AiOutlineQuestionCircle,
-  AiOutlinePlus,
-  AiOutlineMinus,
-} from "react-icons/ai";
+import { Link } from "react-router-dom";
+import { AiOutlinePlus, AiOutlineMinus } from "react-icons/ai";
 
 const FAQ = () => {
   const [openIndex, setOpenIndex] = useState(null);
@@ -24,42 +20,22 @@ const FAQ = () => {
     {
       question: "How long does shipping take?",
       answer:
-        "Standard shipping typically takes 5-7 business days. Express shipping options are available at checkout for faster delivery (2-3 business days). International shipping times vary by location.",
+        "Standard shipping typically takes 5-7 business days. Express shipping options are available at checkout for faster delivery (2-3 business days).",
     },
     {
       question: "Can I track my order?",
       answer:
-        "Yes! Once your order ships, you'll receive a tracking number via email. You can also view your order status by logging into your account and visiting the Orders page.",
+        "Yes! Once your order ships, you'll receive a tracking number via email. You can also view your order status in your account.",
     },
     {
       question: "What is your return policy?",
       answer:
-        "We offer a 30-day return window for most products. Items must be unused and in original packaging. Visit our Return Policy page for complete details and instructions.",
+        "We offer a 30-day return window for most products. Items must be unused and in original packaging.",
     },
     {
       question: "How do I cancel or modify my order?",
       answer:
-        "You can cancel or modify your order within 1 hour of placing it. After that, the order enters processing and cannot be changed. Contact our support team immediately if you need assistance.",
-    },
-    {
-      question: "Do you offer international shipping?",
-      answer:
-        "Yes, we ship to most countries worldwide. Shipping costs and delivery times vary by destination. International orders may be subject to customs fees determined by your country.",
-    },
-    {
-      question: "How do I contact customer support?",
-      answer:
-        "You can reach us via email at support@shophub.com, call us at +1 (555) 123-4567, or use the contact form on our Contact page. We're available 24/7 to assist you.",
-    },
-    {
-      question: "Are my payment details secure?",
-      answer:
-        "Absolutely! We use industry-standard SSL encryption to protect your payment information. We never store your complete credit card details on our servers.",
-    },
-    {
-      question: "Can I change my shipping address?",
-      answer:
-        "If your order hasn't shipped yet, you can update the shipping address by contacting our support team. Once shipped, the address cannot be changed, but you may be able to redirect with the carrier.",
+        "You can cancel or modify your order within 1 hour of placing it. Contact our support team for assistance.",
     },
   ];
 
@@ -68,80 +44,66 @@ const FAQ = () => {
   };
 
   return (
-    <Layout title={"Frequently Asked Questions"}>
-      <div className="min-h-screen bg-gray-50 py-12">
-        <div className="container mx-auto px-4 lg:px-8">
-          <div className="max-w-4xl mx-auto">
+    <Layout title={"FAQ"}>
+      <div className="bg-gray-100 py-6">
+        <div className="container mx-auto px-4">
+          <div className="max-w-3xl mx-auto">
             {/* Header */}
-            <Card className="mb-8">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-xl flex items-center justify-center">
-                  <AiOutlineQuestionCircle size={24} className="text-white" />
-                </div>
-                <div>
-                  <h1 className="text-3xl font-bold text-gray-900">
-                    Frequently Asked Questions
-                  </h1>
-                  <p className="text-gray-600">
-                    Find answers to common questions
-                  </p>
-                </div>
+            <div className="bg-white rounded shadow-sm mb-4">
+              <div className="px-6 py-4 border-b">
+                <h1 className="text-xl font-medium text-gray-900">
+                  Frequently Asked Questions
+                </h1>
+                <p className="text-sm text-gray-500">
+                  Find answers to common questions
+                </p>
               </div>
-            </Card>
+            </div>
 
             {/* FAQ List */}
-            <div className="space-y-4">
+            <div className="bg-white rounded shadow-sm">
               {faqs.map((faq, index) => (
-                <Card key={index} className="overflow-hidden">
+                <div key={index} className="border-b last:border-b-0">
                   <button
                     onClick={() => toggleFAQ(index)}
-                    className="w-full flex items-center justify-between text-left p-6 hover:bg-gray-50 transition-colors"
+                    className="w-full flex items-center justify-between text-left px-6 py-4 hover:bg-gray-50"
                   >
-                    <h3 className="text-lg font-semibold text-gray-900 pr-4">
+                    <span className="text-sm font-medium text-gray-900 pr-4">
                       {faq.question}
-                    </h3>
-                    <div className="flex-shrink-0 w-8 h-8 bg-primary-100 rounded-lg flex items-center justify-center">
-                      {openIndex === index ? (
-                        <AiOutlineMinus
-                          size={20}
-                          className="text-primary-500"
-                        />
-                      ) : (
-                        <AiOutlinePlus size={20} className="text-primary-500" />
-                      )}
-                    </div>
+                    </span>
+                    {openIndex === index ? (
+                      <AiOutlineMinus
+                        size={16}
+                        className="text-gray-400 flex-shrink-0"
+                      />
+                    ) : (
+                      <AiOutlinePlus
+                        size={16}
+                        className="text-gray-400 flex-shrink-0"
+                      />
+                    )}
                   </button>
-                  <div
-                    className={`overflow-hidden transition-all duration-300 ease-in-out ${
-                      openIndex === index ? "max-h-96" : "max-h-0"
-                    }`}
-                  >
-                    <div className="px-6 pb-6 text-gray-700 leading-relaxed">
+                  {openIndex === index && (
+                    <div className="px-6 pb-4 text-sm text-gray-600">
                       {faq.answer}
                     </div>
-                  </div>
-                </Card>
+                  )}
+                </div>
               ))}
             </div>
 
             {/* Contact Section */}
-            <Card className="mt-8 bg-gradient-to-br from-primary-50 to-secondary-50 border-primary-200">
-              <div className="text-center">
-                <h3 className="text-xl font-semibold text-gray-900 mb-2">
-                  Still have questions?
-                </h3>
-                <p className="text-gray-600 mb-4">
-                  Can't find the answer you're looking for? Our support team is
-                  here to help.
-                </p>
-                <a
-                  href="/contact"
-                  className="inline-block px-6 py-3 bg-gradient-to-r from-primary-500 to-secondary-500 text-white rounded-xl font-medium hover:shadow-lg transition-all"
-                >
-                  Contact Support
-                </a>
-              </div>
-            </Card>
+            <div className="bg-white rounded shadow-sm mt-4 p-6 text-center">
+              <p className="text-sm text-gray-600 mb-3">
+                Still have questions?
+              </p>
+              <Link
+                to="/contact"
+                className="inline-block px-6 py-2 bg-primary-500 text-white text-sm font-medium rounded hover:bg-primary-600 transition-colors"
+              >
+                Contact Support
+              </Link>
+            </div>
           </div>
         </div>
       </div>

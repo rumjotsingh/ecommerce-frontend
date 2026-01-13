@@ -1,107 +1,80 @@
 import React from "react";
 import Layout from "./../components/layout/layout";
 import { BiMailSend, BiPhoneCall, BiSupport } from "react-icons/bi";
-import Card from "../components/UI/Card";
-import { AiOutlinePhone } from "react-icons/ai";
 
 const Contact = () => {
   return (
     <Layout title={"Contact us"}>
-      <div className="min-h-screen bg-gray-50 py-12">
-        <div className="container mx-auto px-4 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-center">
-            {/* Image Section */}
-            <div className="relative rounded-2xl overflow-hidden shadow-soft-lg h-[500px]">
-              <img
-                src="/images/contactus.jpeg"
-                alt="Contact Us"
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent flex items-end p-8">
-                <div className="text-white">
-                  <h2 className="text-3xl font-bold mb-2">Get in Touch</h2>
-                  <p className="text-lg">We're here to help you 24/7</p>
-                </div>
-              </div>
+      <div className="bg-gray-100 py-6">
+        <div className="container mx-auto px-4">
+          <div className="bg-white rounded shadow-sm">
+            {/* Header */}
+            <div className="border-b px-6 py-4">
+              <h1 className="text-xl font-medium text-gray-900">Contact Us</h1>
+              <p className="text-sm text-gray-500">We're here to help 24/7</p>
             </div>
 
-            {/* Content Section */}
-            <div className="space-y-6">
-              <Card>
-                <div className="flex items-center gap-4 mb-6">
-                  <div className="w-12 h-12 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-xl flex items-center justify-center">
-                    <AiOutlinePhone size={24} className="text-white" />
-                  </div>
-                  <div>
-                    <h1 className="text-3xl font-bold text-gray-900">
-                      Contact Us
-                    </h1>
-                    <p className="text-gray-600">We're always here to help</p>
-                  </div>
-                </div>
+            <div className="grid md:grid-cols-2 gap-6 p-6">
+              {/* Contact Info */}
+              <div className="space-y-4">
+                <p className="text-sm text-gray-600">
+                  Have any questions or need information about our products?
+                  Feel free to reach out anytime.
+                </p>
 
-                <div className="space-y-4 mb-6">
-                  <p className="text-gray-700 leading-relaxed">
-                    Have any questions or need information about our products?
-                    Feel free to reach out anytime. We're available 24/7 to
-                    assist you.
-                  </p>
-                </div>
-
-                {/* Contact Info Cards */}
-                <div className="space-y-4">
-                  <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-xl hover:bg-primary-50 transition-colors">
-                    <div className="w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <BiMailSend size={20} className="text-primary-500" />
-                    </div>
+                <div className="space-y-3">
+                  <div className="flex items-center gap-3 p-3 bg-gray-50 rounded">
+                    <BiMailSend size={20} className="text-primary-500" />
                     <div>
-                      <h3 className="font-semibold text-gray-900 mb-1">
-                        Email
-                      </h3>
+                      <p className="text-xs text-gray-500">Email</p>
                       <a
-                        href="mailto:help@ecommerceapp.com"
-                        className="text-primary-500 hover:text-primary-600"
+                        href="mailto:help@shophub.com"
+                        className="text-sm text-primary-500"
                       >
-                        help@ecommerceapp.com
+                        help@shophub.com
                       </a>
                     </div>
                   </div>
 
-                  <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-xl hover:bg-primary-50 transition-colors">
-                    <div className="w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <BiPhoneCall size={20} className="text-primary-500" />
-                    </div>
+                  <div className="flex items-center gap-3 p-3 bg-gray-50 rounded">
+                    <BiPhoneCall size={20} className="text-primary-500" />
                     <div>
-                      <h3 className="font-semibold text-gray-900 mb-1">
-                        Phone
-                      </h3>
+                      <p className="text-xs text-gray-500">Phone</p>
                       <a
                         href="tel:0123456789"
-                        className="text-primary-500 hover:text-primary-600"
+                        className="text-sm text-primary-500"
                       >
                         012-3456789
                       </a>
                     </div>
                   </div>
 
-                  <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-xl hover:bg-primary-50 transition-colors">
-                    <div className="w-10 h-10 bg-primary-100 rounded-lg flex items-center justify-center flex-shrink-0">
-                      <BiSupport size={20} className="text-primary-500" />
-                    </div>
+                  <div className="flex items-center gap-3 p-3 bg-gray-50 rounded">
+                    <BiSupport size={20} className="text-primary-500" />
                     <div>
-                      <h3 className="font-semibold text-gray-900 mb-1">
-                        Support (Toll Free)
-                      </h3>
+                      <p className="text-xs text-gray-500">Toll Free</p>
                       <a
                         href="tel:18000000000"
-                        className="text-primary-500 hover:text-primary-600"
+                        className="text-sm text-primary-500"
                       >
                         1800-0000-0000
                       </a>
                     </div>
                   </div>
                 </div>
-              </Card>
+              </div>
+
+              {/* Image */}
+              <div className="hidden md:block">
+                <img
+                  src="/images/contactus.jpeg"
+                  alt="Contact Us"
+                  className="w-full h-64 object-cover rounded"
+                  onError={(e) => {
+                    e.target.style.display = "none";
+                  }}
+                />
+              </div>
             </div>
           </div>
         </div>

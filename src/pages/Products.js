@@ -7,13 +7,16 @@ import { Prices } from "../components/Prices";
 import ProductCard from "../components/Product/ProductCard";
 import Button from "../components/UI/Button";
 import Card from "../components/UI/Card";
+import { ProductGridSkeleton } from "../components/UI/SkeletonLoader";
+import EmptyState from "../components/UI/EmptyState";
 import {
   AiOutlineFilter,
   AiOutlineClose,
   AiOutlineAppstore,
+  AiOutlineShopping,
 } from "react-icons/ai";
 
-const Products = () => {
+export const Products = () => {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [checked, setChecked] = useState([]);
@@ -24,7 +27,7 @@ const Products = () => {
   const [showFilters, setShowFilters] = useState(false);
 
   // Get all categories
-  const getAllCategory = async () => {
+  const getAllCategory = useCallback(async () => {
     try {
       const { data } = await axios.get(API_ENDPOINTS.CATEGORY.GET_ALL);
       if (data?.success) {
@@ -33,13 +36,7 @@ const Products = () => {
     } catch (error) {
       console.log(error);
     }
-  };
-
-  useEffect(() => {
-    getAllCategory();
-    getTotal();
-    getAllProducts();
-  }, [getAllProducts]);
+  }, []);
 
   // Get products
   const getAllProducts = useCallback(async () => {
@@ -57,14 +54,19 @@ const Products = () => {
   }, [page]);
 
   // Get total count
-  const getTotal = async () => {
+  const getTotal = useCallback(async () => {
     try {
       const { data } = await axios.get(API_ENDPOINTS.PRODUCT.COUNT);
       setTotal(data?.total);
     } catch (error) {
       console.log(error);
     }
-  };
+  }, []);
+  useEffect(() => {
+    getAllCategory();
+    getTotal();
+    getAllProducts();
+  }, [getAllCategory, getTotal, getAllProducts]);
 
   // Load more
   const loadMore = async () => {
@@ -127,7 +129,7 @@ const Products = () => {
   return (
     <Layout title={"All Products - ShopHub"}>
       {/* Hero Section */}
-      <div className="bg-gradient-to-br from-primary-50 via-white to-secondary-50 py-10 sm:py-12 lg:py-16">
+      {/* <div className="bg-gradient-to-br from-primary-50 via-white to-secondary-50 py-10 sm:py-12 lg:py-16">
         <div className="container mx-auto px-3 sm:px-4 lg:px-8">
           <div className="text-center space-y-3 sm:space-y-4">
             <div className="inline-flex items-center justify-center w-16 h-16 sm:w-18 sm:h-18 lg:w-20 lg:h-20 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-xl sm:rounded-2xl mb-3 sm:mb-4">
@@ -144,7 +146,7 @@ const Products = () => {
             </p>
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* Products with Filters */}
       <section className="py-10 sm:py-12 lg:py-16 bg-gray-50">
@@ -248,13 +250,7 @@ const Products = () => {
             {/* Products Grid */}
             <div className="flex-1">
               {loading ? (
-                <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6">
-                  {[...Array(6)].map((_, index) => (
-                    <div key={index} className="animate-pulse">
-                      <div className="bg-gray-200 rounded-xl sm:rounded-2xl h-64 sm:h-80 lg:h-96"></div>
-                    </div>
-                  ))}
-                </div>
+                <ProductGridSkeleton count={6} columns={3} />
               ) : products?.length > 0 ? (
                 <>
                   <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 lg:gap-6">
@@ -283,20 +279,19 @@ const Products = () => {
                 </>
               ) : (
                 <Card className="p-6 sm:p-8">
-                  <div className="text-center py-8 sm:py-12">
-                    <div className="inline-flex items-center justify-center w-14 h-14 sm:w-16 sm:h-16 bg-gray-100 rounded-full mb-3 sm:mb-4">
-                      <AiOutlineAppstore
-                        size={28}
-                        className="text-gray-400 sm:w-8 sm:h-8"
-                      />
-                    </div>
-                    <h3 className="text-lg sm:text-xl font-semibold text-gray-900 mb-1.5 sm:mb-2">
-                      No Products Found
-                    </h3>
-                    <p className="text-sm sm:text-base text-gray-600">
-                      Try adjusting your filters to see more results
-                    </p>
-                  </div>
+                  <EmptyState
+                    icon={
+                      <AiOutlineShopping className="w-20 h-20 text-neutral-300" />
+                    }
+                    title="No Products Found"
+                    description="We couldn't find any products matching your criteria. Try adjusting your filters or browse all categories."
+                    actionText="Browse All Categories"
+                    onAction={() => {
+                      setChecked([]);
+                      setRadio([]);
+                      getAllProducts();
+                    }}
+                  />
                 </Card>
               )}
             </div>

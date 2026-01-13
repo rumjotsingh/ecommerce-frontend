@@ -24,7 +24,7 @@ const Categories = () => {
   return (
     <Layout title={"All Categories"}>
       {/* Hero Section */}
-      <div className="bg-gradient-to-br from-primary-50 via-white to-secondary-50 py-10 sm:py-12 lg:py-16">
+      {/* <div className="bg-gradient-to-br from-primary-50 via-white to-secondary-50 py-10 sm:py-12 lg:py-16">
         <div className="container mx-auto px-3 sm:px-4 lg:px-8">
           <div className="text-center space-y-3 sm:space-y-4">
             <div className="inline-flex items-center justify-center w-16 h-16 sm:w-18 sm:h-18 lg:w-20 lg:h-20 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-xl sm:rounded-2xl mb-3 sm:mb-4">
@@ -42,7 +42,7 @@ const Categories = () => {
             </p>
           </div>
         </div>
-      </div>
+      </div> */}
 
       {/* Categories Grid Section */}
       <section className="py-10 sm:py-12 lg:py-16 bg-gray-50">

@@ -1,79 +1,74 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-import { API_ENDPOINTS } from "../../config/api";
+import React, { useEffect } from "react";
+import { Link } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchProducts } from "../../redux/slices/productSlice";
 import ProductCard from "../Product/ProductCard";
-import { AiOutlineArrowRight } from "react-icons/ai";
-import { useNavigate } from "react-router-dom";
+import { AiOutlineRight } from "react-icons/ai";
 
 const FeaturedProducts = () => {
-  const navigate = useNavigate();
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(false);
-
-  const getAllProducts = async () => {
-    try {
-      setLoading(true);
-      const { data } = await axios.get(API_ENDPOINTS.PRODUCT.LIST(1));
-      setLoading(false);
-      setProducts(data.products?.slice(0, 8) || []);
-    } catch (error) {
-      setLoading(false);
-      console.log(error);
-    }
-  };
+  const dispatch = useDispatch();
+  const { products, loading, error } = useSelector((state) => state.product);
 
   useEffect(() => {
-    getAllProducts();
-  }, []);
+    dispatch(fetchProducts({ page: 1, limit: 12 }));
+  }, [dispatch]);
+
+  if (loading) {
+    return (
+      <section className="bg-gray-100 py-6">
+        <div className="container mx-auto px-4">
+          <div className="bg-white rounded shadow-sm p-4">
+            <div className="flex items-center justify-between mb-4">
+              <div className="h-6 w-40 bg-gray-200 rounded animate-pulse" />
+              <div className="h-8 w-24 bg-gray-200 rounded animate-pulse" />
+            </div>
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+              {[...Array(6)].map((_, i) => (
+                <div key={i} className="animate-pulse">
+                  <div className="aspect-square bg-gray-200 rounded mb-2" />
+                  <div className="h-4 bg-gray-200 rounded mb-1" />
+                  <div className="h-4 bg-gray-200 rounded w-2/3" />
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  if (error || !products?.length) {
+    return null;
+  }
+
+  const featuredProducts = products.slice(0, 12);
 
   return (
-    <section className="py-16 bg-white">
-      <div className="container mx-auto px-4 lg:px-8">
-        {/* Section Header */}
-        <div className="flex items-center justify-between mb-12">
-          <div>
-            <h2 className="text-4xl font-bold text-gray-900 mb-2">
-              Featured Products
+    <section className="bg-gray-100 py-4">
+      <div className="container mx-auto px-4">
+        <div className="bg-white rounded shadow-sm">
+          {/* Header */}
+          <div className="flex items-center justify-between p-4 border-b">
+            <h2 className="text-xl font-bold text-gray-900">
+              Top Picks For You
             </h2>
-            <p className="text-lg text-gray-600">
-              Discover our handpicked selection of trending items
-            </p>
+            <Link
+              to="/products"
+              className="flex items-center gap-1 bg-primary-500 text-white px-4 py-2 rounded text-sm font-medium hover:bg-primary-600 transition-colors"
+            >
+              View All
+              <AiOutlineRight size={14} />
+            </Link>
           </div>
-          <button
-            onClick={() => navigate("/products")}
-            className="hidden md:flex items-center gap-2 text-primary-500 font-medium hover:gap-3 transition-all"
-          >
-            View All
-            <AiOutlineArrowRight size={20} />
-          </button>
-        </div>
 
-        {/* Products Grid */}
-        {loading ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {[...Array(8)].map((_, index) => (
-              <div key={index} className="animate-pulse">
-                <div className="bg-gray-200 rounded-2xl h-80"></div>
-              </div>
-            ))}
+          {/* Products Grid */}
+          <div className="p-4">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+              {featuredProducts.map((product) => (
+                <ProductCard key={product._id} product={product} />
+              ))}
+            </div>
           </div>
-        ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-            {products?.map((product) => (
-              <ProductCard key={product._id} product={product} />
-            ))}
-          </div>
-        )}
-
-        {/* Mobile View All Button */}
-        <div className="md:hidden text-center mt-8">
-          <button
-            onClick={() => navigate("/products")}
-            className="inline-flex items-center gap-2 px-8 py-3 bg-gradient-to-r from-primary-500 to-secondary-500 text-white font-medium rounded-xl hover:shadow-lg transition-all"
-          >
-            View All Products
-            <AiOutlineArrowRight size={20} />
-          </button>
         </div>
       </div>
     </section>

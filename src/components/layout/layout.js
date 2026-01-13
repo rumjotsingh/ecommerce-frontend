@@ -7,7 +7,7 @@ import "react-toastify/dist/ReactToastify.css";
 
 function Layout({ children, title, description, keyword, author }) {
   return (
-    <div>
+    <div className="min-h-screen flex flex-col bg-gray-100">
       <Helmet>
         <meta charSet="utf-8" />
         <title>{title}</title>
@@ -17,7 +17,7 @@ function Layout({ children, title, description, keyword, author }) {
         <meta name="author" content={author} />
       </Helmet>
       <Header />
-      <main style={{ minHeight: "70vh" }}>
+      <main className="flex-1">
         {children}
         <Toaster />
       </main>
