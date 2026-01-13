@@ -15,6 +15,7 @@ import {
 } from "react-icons/ai";
 import { BiPackage, BiTrendingUp } from "react-icons/bi";
 import Card from "../../components/UI/Card";
+import { DashboardCardSkeleton, TableRowSkeleton } from "../../components/UI/SkeletonLoader";
 
 const AdminDashboard = () => {
   const [auth] = useAuth();
@@ -135,12 +136,17 @@ const AdminDashboard = () => {
 
               {/* Stats Grid */}
               <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4 lg:gap-6">
-                {stats.map((stat, index) => (
-                  <Card
-                    key={index}
-                    hover
-                    className="relative overflow-hidden p-3 sm:p-4 lg:p-6"
-                  >
+                {loading ? (
+                  Array.from({ length: 4 }).map((_, index) => (
+                    <DashboardCardSkeleton key={index} />
+                  ))
+                ) : (
+                  stats.map((stat, index) => (
+                    <Card
+                      key={index}
+                      hover
+                      className="relative overflow-hidden p-3 sm:p-4 lg:p-6 transition-all duration-200 focus-within:ring-2 focus-within:ring-primary-500 focus-within:ring-offset-2"
+                    >
                     <div className="space-y-2 sm:space-y-3 lg:space-y-4">
                       <div className="flex items-center justify-between">
                         <div
@@ -173,7 +179,8 @@ const AdminDashboard = () => {
                       </div>
                     </div>
                   </Card>
-                ))}
+                  ))
+                )}
               </div>
 
               {/* Charts Section */}
@@ -243,14 +250,21 @@ const AdminDashboard = () => {
                     </div>
                     <div className="space-y-2 sm:space-y-3 lg:space-y-4">
                       {loading ? (
-                        <div className="text-center py-6 sm:py-8 text-sm sm:text-base text-gray-500">
-                          Loading top products...
-                        </div>
+                        Array.from({ length: 5 }).map((_, index) => (
+                          <div key={index} className="flex items-center gap-3 p-3 bg-gray-50 rounded-lg animate-pulse">
+                            <div className="w-10 h-10 bg-neutral-200 rounded-lg" />
+                            <div className="flex-1 space-y-2">
+                              <div className="h-4 bg-neutral-200 rounded w-3/4" />
+                              <div className="h-3 bg-neutral-200 rounded w-1/2" />
+                            </div>
+                            <div className="h-5 bg-neutral-200 rounded w-16" />
+                          </div>
+                        ))
                       ) : topProducts?.length > 0 ? (
                         topProducts.map((product, index) => (
                           <div
                             key={index}
-                            className="flex items-center gap-2 sm:gap-3 lg:gap-4 p-2.5 sm:p-3 lg:p-4 bg-gray-50 rounded-lg sm:rounded-xl hover:bg-gray-100 transition-colors"
+                            className="flex items-center gap-2 sm:gap-3 lg:gap-4 p-2.5 sm:p-3 lg:p-4 bg-gray-50 rounded-lg sm:rounded-xl hover:bg-gray-100 active:scale-95 transition-all duration-200 focus-within:ring-2 focus-within:ring-primary-500 focus-within:ring-offset-2 cursor-pointer"
                           >
                             <div className="flex-shrink-0 w-8 h-8 sm:w-9 sm:h-9 lg:w-10 lg:h-10 bg-gradient-to-br from-primary-500 to-secondary-500 rounded-md sm:rounded-lg flex items-center justify-center text-white font-bold text-xs sm:text-sm lg:text-base">
                               {index + 1}

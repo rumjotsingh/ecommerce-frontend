@@ -20,6 +20,7 @@ import Rating from "../components/UI/Rating";
 import Button from "../components/UI/Button";
 import Badge from "../components/UI/Badge";
 import ProductCard from "../components/Product/ProductCard";
+import EmptyState from "../components/UI/EmptyState";
 import {
   addToWishlist,
   removeFromWishlist,
@@ -608,14 +609,31 @@ const ProductDetails = () => {
             {/* Reviews List */}
             <div className="space-y-6">
               {reviewsLoading ? (
-                <div className="text-center py-8">
-                  <p className="text-gray-600">Loading reviews...</p>
+                <div className="space-y-4">
+                  {Array.from({ length: 3 }).map((_, index) => (
+                    <div key={index} className="animate-pulse">
+                      <div className="flex items-start gap-4">
+                        <div className="w-12 h-12 bg-neutral-200 rounded-full" />
+                        <div className="flex-1 space-y-2">
+                          <div className="h-4 bg-neutral-200 rounded w-1/4" />
+                          <div className="h-4 bg-neutral-200 rounded w-16" />
+                          <div className="h-4 bg-neutral-200 rounded w-full" />
+                          <div className="h-4 bg-neutral-200 rounded w-3/4" />
+                        </div>
+                      </div>
+                    </div>
+                  ))}
                 </div>
               ) : reviews?.length === 0 ? (
-                <div className="text-center py-8">
-                  <p className="text-gray-600">
-                    No reviews yet. Be the first to review!
-                  </p>
+                <div className="text-center py-12">
+                  <EmptyState
+                    icon={
+                      <AiOutlineStar className="w-16 h-16 text-neutral-300" />
+                    }
+                    title="No Reviews Yet"
+                    description="Be the first to review this product and help others make informed decisions!"
+                    size="sm"
+                  />
                 </div>
               ) : (
                 reviews?.map((review) => (

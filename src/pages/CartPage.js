@@ -19,15 +19,15 @@ import {
   clearCart,
 } from "../redux/slices/cartSlice";
 import {
-  AiOutlineShoppingCart,
   AiOutlineDelete,
   AiOutlineMinus,
   AiOutlinePlus,
   AiOutlineRight,
 } from "react-icons/ai";
-import { BiPackage } from "react-icons/bi";
+import { BiShoppingBag } from "react-icons/bi";
 import Button from "../components/UI/Button";
 import Card from "../components/UI/Card";
+import EmptyState from "../components/UI/EmptyState";
 
 const CartPage = () => {
   const [auth] = useAuth();
@@ -232,27 +232,13 @@ const CartPage = () => {
 
           {cart?.length === 0 ? (
             <Card className="text-center py-16">
-              <div className="flex flex-col items-center gap-6">
-                <div className="w-32 h-32 bg-gray-100 rounded-full flex items-center justify-center">
-                  <AiOutlineShoppingCart size={64} className="text-gray-300" />
-                </div>
-                <div>
-                  <h2 className="text-2xl font-semibold text-gray-900 mb-2">
-                    Your cart is empty
-                  </h2>
-                  <p className="text-gray-600">
-                    Start shopping to add items to your cart
-                  </p>
-                </div>
-                <Button
-                  variant="primary"
-                  size="lg"
-                  onClick={() => navigate("/")}
-                  icon={<BiPackage size={20} />}
-                >
-                  Continue Shopping
-                </Button>
-              </div>
+              <EmptyState
+                icon={<BiShoppingBag className="w-24 h-24 text-neutral-300" />}
+                title="Your cart is empty"
+                description="Start shopping to add items to your cart. Discover amazing products and great deals!"
+                actionText="Continue Shopping"
+                onAction={() => navigate("/")}
+              />
             </Card>
           ) : (
             <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
@@ -302,7 +288,8 @@ const CartPage = () => {
                                   (product.orderQuantity || 1) - 1
                                 )
                               }
-                              className="w-8 h-8 rounded-lg border-2 border-gray-300 flex items-center justify-center text-gray-700 hover:border-primary-500 hover:text-primary-500 transition-colors"
+                              className="w-8 h-8 rounded-lg border-2 border-gray-300 flex items-center justify-center text-gray-700 hover:border-primary-500 hover:text-primary-500 hover:bg-primary-50 active:scale-95 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+                              aria-label="Decrease quantity"
                             >
                               <AiOutlineMinus size={14} />
                             </button>
@@ -316,7 +303,8 @@ const CartPage = () => {
                                   (product.orderQuantity || 1) + 1
                                 )
                               }
-                              className="w-8 h-8 rounded-lg border-2 border-gray-300 flex items-center justify-center text-gray-700 hover:border-primary-500 hover:text-primary-500 transition-colors"
+                              className="w-8 h-8 rounded-lg border-2 border-gray-300 flex items-center justify-center text-gray-700 hover:border-primary-500 hover:text-primary-500 hover:bg-primary-50 active:scale-95 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2"
+                              aria-label="Increase quantity"
                             >
                               <AiOutlinePlus size={14} />
                             </button>
@@ -325,7 +313,8 @@ const CartPage = () => {
                           {/* Remove Button */}
                           <button
                             onClick={() => removeCartItem(product._id)}
-                            className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                            className="flex items-center gap-1.5 px-3 py-1.5 text-sm text-red-500 hover:bg-red-50 rounded-lg transition-all duration-200 active:scale-95 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2"
+                            aria-label="Remove item"
                           >
                             <AiOutlineDelete size={18} />
                             <span className="font-medium">Remove</span>

@@ -1,11 +1,26 @@
 import React from "react";
 
-const Card = ({ children, className = "", hover = false, ...props }) => {
+const Card = ({
+  children,
+  className = "",
+  hover = false,
+  padding = "default",
+  ...props
+}) => {
+  const baseStyles = "bg-white border border-gray-100 rounded shadow-sm";
+
+  const hoverStyles = hover ? "hover:shadow-md transition-shadow" : "";
+
+  const paddingStyles = {
+    none: "",
+    sm: "p-3",
+    default: "p-4",
+    lg: "p-6",
+  };
+
   return (
     <div
-      className={`bg-white rounded-xl shadow-soft p-6 ${
-        hover ? "hover:shadow-soft-lg transition-shadow duration-300" : ""
-      } ${className}`}
+      className={`${baseStyles} ${hoverStyles} ${paddingStyles[padding]} ${className}`}
       {...props}
     >
       {children}
